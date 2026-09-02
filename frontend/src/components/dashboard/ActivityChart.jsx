@@ -1,10 +1,38 @@
 import React, { useState } from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import { MOCK_ACTIVITY_DATA } from '../../data/mockData';
 import { Calendar } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { fileService } from '../../services/fileService';
+import { getFileTypeCategory } from '../../utils/formatters';
 
 export const ActivityChart = () => {
   const [timeframe, setTimeframe] = useState('Last 7 days');
+
+  const { data: allFiles = [] } = useQuery({
+    queryKey: ['files'],
+    queryFn: () => fileService.getAllFiles(),
+  });
+
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  
+  const chartData = daysOfWeek.map((day) => {
+    let Media = 0;
+    let Photos = 0;
+    let Docs = 0;
+
+    allFiles.forEach((file) => {
+      const cat = getFileTypeCategory(file.name, file.type);
+      const fileDate = new Date(file.lastModified || file.createdAt);
+      const dayName = fileDate.toLocaleDateString('en-US', { weekday: 'short' });
+      if (dayName === day) {
+        if (cat === 'video') Media += 1;
+        else if (cat === 'image') Photos += 1;
+        else if (cat === 'document' || cat === 'pdf' || cat === 'spreadsheet') Docs += 1;
+      }
+    });
+
+    return { day, Media, Photos, Docs };
+  });
 
   return (
     <div className="bg-[#151821] border border-[#252936] rounded-2xl p-5 flex flex-col justify-between h-full hover:border-[#252936]/80 transition-all shadow-lg">
@@ -30,7 +58,7 @@ export const ActivityChart = () => {
       {/* Recharts Bar Chart */}
       <div className="w-full h-48 sm:h-56 mt-2">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={MOCK_ACTIVITY_DATA} barGap={4} barCategoryGap="20%">
+          <BarChart data={chartData} barGap={4} barCategoryGap="20%">
             <XAxis
               dataKey="day"
               stroke="#6B7280"
@@ -43,6 +71,7 @@ export const ActivityChart = () => {
               fontSize={11}
               tickLine={false}
               axisLine={false}
+              allowDecimals={false}
             />
             <Tooltip
               contentStyle={{

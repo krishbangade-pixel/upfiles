@@ -1,8 +1,8 @@
 const STORAGE_KEYS = {
-  FOLDERS: 'cloudvault_folders',
-  FILES: 'cloudvault_files',
+  FOLDERS: 'cloudvault_folders_v2',
+  FILES: 'cloudvault_files_v2',
   VIEW_MODE: 'cloudvault_view_mode',
-  NOTIFICATIONS: 'cloudvault_notifications',
+  NOTIFICATIONS: 'cloudvault_notifications_v2',
 };
 
 export const getStoredItem = (key, defaultValue) => {

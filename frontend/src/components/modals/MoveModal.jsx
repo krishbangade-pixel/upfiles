@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FolderInput, X, Folder, HardDrive, ChevronRight } from 'lucide-react';
-import { MOCK_FOLDERS } from '../../data/mockData';
+import { folderService } from '../../services/folderService';
 
 export const MoveModal = ({ isOpen, item, onClose, onMoveConfirm }) => {
   const [selectedFolderId, setSelectedFolderId] = useState(null); // null = My Drive root
+  const [availableFolders, setAvailableFolders] = useState([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      folderService.getAllFolders().then((folders) => {
+        setAvailableFolders(folders.filter((f) => f.id !== item?.id));
+      });
+    }
+  }, [isOpen, item]);
 
   if (!isOpen || !item) return null;
 
@@ -48,7 +57,7 @@ export const MoveModal = ({ isOpen, item, onClose, onMoveConfirm }) => {
           </button>
 
           {/* Available folders */}
-          {MOCK_FOLDERS.filter((f) => f.id !== item.id).map((f) => (
+          {availableFolders.map((f) => (
             <button
               key={f.id}
               onClick={() => setSelectedFolderId(f.id)}
