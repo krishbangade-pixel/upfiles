@@ -22,14 +22,14 @@ export const Starred = () => {
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
       {/* Top Header */}
-      <div className="flex items-center justify-between border-b border-[#63655d] pb-3">
+      <div className="flex items-center justify-between border-b border-[#34373d] pb-3">
         <div className="flex items-center gap-2">
           <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
           <h1 className="text-xl font-bold text-white tracking-tight">Starred</h1>
         </div>
 
         {/* View Toggle */}
-        <div className="flex items-center bg-[#444640] border border-[#63655d] rounded-xl p-0.5">
+        <div className="flex items-center bg-[#222428] border border-[#34373d] rounded-xl p-0.5">
           <button
             onClick={() => setViewMode('grid')}
             className={`p-1.5 rounded-lg transition-colors ${

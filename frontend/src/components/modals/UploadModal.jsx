@@ -95,7 +95,7 @@ export const UploadModal = () => {
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-[#63655d] hover:border-[#316d7a] bg-[#3b3d37] rounded-xl p-8 text-center cursor-pointer transition-colors flex flex-col items-center justify-center"
+              className="border-2 border-dashed border-[#34373d] hover:border-[#316d7a] bg-[#1d1e21] rounded-xl p-8 text-center cursor-pointer transition-colors flex flex-col items-center justify-center"
             >
               <UploadCloud className="w-10 h-10 text-[#316d7a] mb-3 stroke-[1.5]" />
               <p className="text-sm font-medium text-white">Drag & drop files here</p>
@@ -115,7 +115,7 @@ export const UploadModal = () => {
                 {selectedFiles.map((f, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-2 bg-[#3b3d37] border border-[#63655d] rounded-lg text-xs"
+                    className="flex items-center justify-between p-2 bg-[#1d1e21] border border-[#34373d] rounded-lg text-xs"
                   >
                     <div className="flex items-center gap-2 truncate">
                       <File className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
@@ -133,7 +133,7 @@ export const UploadModal = () => {
               <button
                 type="button"
                 onClick={handleResetAndClose}
-                className="px-4 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#51534d] rounded-xl transition-colors"
+                className="px-4 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#18191b] rounded-xl transition-colors"
               >
                 Cancel
               </button>
@@ -150,7 +150,7 @@ export const UploadModal = () => {
         ) : uploading ? (
           <div className="py-8 text-center space-y-4">
             <p className="text-sm font-medium text-white">Uploading to Supabase Storage...</p>
-            <div className="w-full bg-[#3b3d37] rounded-full h-2.5 overflow-hidden border border-[#63655d]">
+            <div className="w-full bg-[#1d1e21] rounded-full h-2.5 overflow-hidden border border-[#34373d]">
               <div
                 className="bg-[#316d7a] h-2.5 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}

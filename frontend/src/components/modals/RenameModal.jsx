@@ -37,14 +37,14 @@ export const RenameModal = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoFocus
-            className="w-full px-3 py-2 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#316d7a] transition-all"
+            className="w-full px-3 py-2 text-xs bg-[#1d1e21] border border-[#34373d] rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#316d7a] transition-all"
           />
         </div>
         <div className="flex items-center justify-end gap-2 pt-2">
           <button
             type="button"
             onClick={closeModal}
-            className="px-4 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#51534d] rounded-xl transition-colors"
+            className="px-4 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#18191b] rounded-xl transition-colors"
           >
             Cancel
           </button>

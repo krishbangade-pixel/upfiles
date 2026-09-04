@@ -19,7 +19,7 @@ export const FileCard = ({ file, isTrash = false }) => {
       draggable={!isTrash}
       onDragStart={handleDragStart}
       onClick={() => openModal('preview', file)}
-      className="group relative bg-[#444640] border border-[#63655d] rounded-xl p-3.5 hover:shadow-md hover:border-[#316d7a] transition-all cursor-pointer select-none"
+      className="group relative bg-[#222428] border border-[#34373d] rounded-xl p-3.5 hover:shadow-md hover:border-[#316d7a] transition-all cursor-pointer select-none"
     >
       <div className="flex items-center justify-between mb-3">
         <FileIcon type={file.type} extension={file.extension} className="w-6 h-6" />
@@ -34,7 +34,7 @@ export const FileCard = ({ file, isTrash = false }) => {
       </div>
 
       {file.previewUrl ? (
-        <div className="w-full h-24 mb-3 rounded-lg overflow-hidden bg-[#3b3d37] border border-[#63655d] flex items-center justify-center">
+        <div className="w-full h-24 mb-3 rounded-lg overflow-hidden bg-[#1d1e21] border border-[#34373d] flex items-center justify-center">
           <img
             src={file.previewUrl}
             alt={file.name}

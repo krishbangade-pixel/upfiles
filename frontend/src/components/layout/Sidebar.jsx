@@ -54,7 +54,7 @@ export const Sidebar = () => {
       )}
 
       <aside
-        className={`fixed sm:static inset-y-0 left-0 z-40 w-[210px] min-w-[210px] flex-shrink-0 bg-[#51534d] border-r border-[#63655d] flex flex-col justify-between p-4 transition-transform duration-200 ease-in-out ${
+        className={`fixed sm:static inset-y-0 left-0 z-40 w-[210px] min-w-[210px] flex-shrink-0 bg-[#18191b] border-r border-[#34373d] flex flex-col justify-between p-4 transition-transform duration-200 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : 'max-sm:-translate-x-full'
         }`}
       >
@@ -85,25 +85,25 @@ export const Sidebar = () => {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute left-0 mt-2 w-48 bg-[#444640] border border-[#63655d] rounded-xl shadow-xl py-1.5 z-50 text-xs font-medium text-gray-100 animate-fade-in">
+              <div className="absolute left-0 mt-2 w-48 bg-[#222428] border border-[#34373d] rounded-xl shadow-xl py-1.5 z-50 text-xs font-medium text-gray-100 animate-fade-in">
                 <button
                   onClick={() => handleDropdownAction('newFolder')}
-                  className="w-full text-left px-3.5 py-2 hover:bg-[#51534d] flex items-center gap-2.5 cursor-pointer text-gray-100"
+                  className="w-full text-left px-3.5 py-2 hover:bg-[#18191b] flex items-center gap-2.5 cursor-pointer text-gray-100"
                 >
                   <FolderPlus className="w-4 h-4 text-gray-300" />
                   New Folder
                 </button>
-                <div className="my-1 border-t border-[#63655d]" />
+                <div className="my-1 border-t border-[#34373d]" />
                 <button
                   onClick={() => handleDropdownAction('upload')}
-                  className="w-full text-left px-3.5 py-2 hover:bg-[#51534d] flex items-center gap-2.5 cursor-pointer text-gray-100"
+                  className="w-full text-left px-3.5 py-2 hover:bg-[#18191b] flex items-center gap-2.5 cursor-pointer text-gray-100"
                 >
                   <Upload className="w-4 h-4 text-gray-300" />
                   Upload Files
                 </button>
                 <button
                   onClick={() => handleDropdownAction('upload')}
-                  className="w-full text-left px-3.5 py-2 hover:bg-[#51534d] flex items-center gap-2.5 cursor-pointer text-gray-100"
+                  className="w-full text-left px-3.5 py-2 hover:bg-[#18191b] flex items-center gap-2.5 cursor-pointer text-gray-100"
                 >
                   <FolderUp className="w-4 h-4 text-gray-300" />
                   Upload Folder
@@ -124,8 +124,8 @@ export const Sidebar = () => {
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-colors ${
                       isActive
-                        ? 'bg-[#444640] text-white font-semibold border border-[#63655d]'
-                        : 'text-gray-200 hover:bg-[#444640] hover:text-white'
+                        ? 'bg-[#222428] text-white font-semibold border border-[#34373d]'
+                        : 'text-gray-200 hover:bg-[#222428] hover:text-white'
                     }`
                   }
                 >
@@ -138,12 +138,12 @@ export const Sidebar = () => {
         </div>
 
         {/* Bottom Storage Information */}
-        <div className="pt-4 border-t border-[#63655d] space-y-2 text-xs">
+        <div className="pt-4 border-t border-[#34373d] space-y-2 text-xs">
           <div className="flex items-center gap-2 text-gray-200 font-medium">
             <HardDrive className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
             <span className="truncate">{storageInfo.formattedText}</span>
           </div>
-          <div className="w-full bg-[#3b3d37] h-1.5 rounded-full overflow-hidden">
+          <div className="w-full bg-[#1d1e21] h-1.5 rounded-full overflow-hidden">
             <div
               className="bg-[#316d7a] h-1.5 rounded-full transition-all duration-300"
               style={{ width: `${storageInfo.percentage}%` }}

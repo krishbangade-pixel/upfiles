@@ -83,10 +83,10 @@ export const PreviewModal = () => {
     >
       <div className="space-y-5">
         {/* Preview Container */}
-        <div className="w-full bg-gray-50 border border-gray-200 rounded-xl overflow-hidden min-h-[220px] max-h-[360px] flex items-center justify-center relative p-4">
+        <div className="w-full bg-[#1d1e21] border border-[#34373d] rounded-xl overflow-hidden min-h-[220px] max-h-[360px] flex items-center justify-center relative p-4">
           {loadingPreview ? (
-            <div className="flex flex-col items-center gap-2 text-xs text-gray-500">
-              <Loader2 className="w-6 h-6 animate-spin text-zinc-900" />
+            <div className="flex flex-col items-center gap-2 text-xs text-gray-300">
+              <Loader2 className="w-6 h-6 animate-spin text-[#316d7a]" />
               <span>Loading preview from Supabase Storage...</span>
             </div>
           ) : isImage && (previewUrl || file.previewUrl) ? (
@@ -117,56 +117,56 @@ export const PreviewModal = () => {
           ) : (
             <div className="flex flex-col items-center justify-center text-center p-6 space-y-3">
               <FileIcon type={file.type} extension={file.extension} className="w-16 h-16" />
-              <p className="text-sm font-semibold text-gray-800">{file.name}</p>
-              <p className="text-xs text-gray-500">Preview unavailable for this file format</p>
+              <p className="text-sm font-semibold text-white">{file.name}</p>
+              <p className="text-xs text-gray-400">Preview unavailable for this file format</p>
             </div>
           )}
         </div>
 
         {/* File Metadata Details */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gray-50/80 p-3.5 rounded-lg border border-gray-100 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#1d1e21] p-3.5 rounded-xl border border-[#34373d] text-xs">
           <div className="space-y-1">
             <span className="text-gray-400 font-medium flex items-center gap-1">
               <HardDrive className="w-3.5 h-3.5" /> File size
             </span>
-            <p className="font-semibold text-gray-800">{file.formattedSize || '0 KB'}</p>
+            <p className="font-semibold text-white">{file.formattedSize || '0 KB'}</p>
           </div>
           <div className="space-y-1">
             <span className="text-gray-400 font-medium flex items-center gap-1">
               <FileText className="w-3.5 h-3.5" /> Type
             </span>
-            <p className="font-semibold text-gray-800 uppercase">{file.extension || file.type || 'FILE'}</p>
+            <p className="font-semibold text-white uppercase">{file.extension || file.type || 'FILE'}</p>
           </div>
           <div className="space-y-1">
             <span className="text-gray-400 font-medium flex items-center gap-1">
               <User className="w-3.5 h-3.5" /> Owner
             </span>
-            <p className="font-semibold text-gray-800">{file.owner || 'You'}</p>
+            <p className="font-semibold text-white">{file.owner || 'You'}</p>
           </div>
           <div className="space-y-1">
             <span className="text-gray-400 font-medium flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5" /> Modified
             </span>
-            <p className="font-semibold text-gray-800">{formatDate(file.updatedAt)}</p>
+            <p className="font-semibold text-white">{formatDate(file.updatedAt)}</p>
           </div>
         </div>
 
         {/* Actions Footer */}
-        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+        <div className="flex items-center justify-between pt-2 border-t border-[#34373d]">
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
                 closeModal();
                 openModal('share', file, { isFolder: false });
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-[#1d1e21] hover:bg-[#18191b] rounded-xl transition-colors border border-[#34373d]"
             >
               <Share2 className="w-3.5 h-3.5" />
               Share
             </button>
             <button
               onClick={handleDownload}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#316d7a] hover:bg-[#275863] rounded-xl transition-colors cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               Download
@@ -175,7 +175,7 @@ export const PreviewModal = () => {
           <button
             type="button"
             onClick={closeModal}
-            className="px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            className="px-4 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#18191b] rounded-xl transition-colors"
           >
             Close
           </button>

@@ -98,13 +98,13 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#51534d] text-white flex flex-col justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#316d7a] selection:text-white">
+    <div className="min-h-screen bg-[#18191b] text-white flex flex-col justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#316d7a] selection:text-white">
       {/* Main Container */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 space-y-6">
         
         {/* Header Branding */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-[#444640] border border-[#63655d] rounded-2xl shadow-md">
+          <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-[#222428] border border-[#34373d] rounded-2xl shadow-md">
             <Cloud className="w-6 h-6 text-[#316d7a] fill-[#316d7a] stroke-[1.5]" />
             <span className="text-xl font-bold tracking-tight text-white">
               CloudDrive
@@ -123,7 +123,7 @@ export const Login = () => {
         </div>
 
         {/* Card Form */}
-        <div className="bg-[#444640] py-8 px-6 sm:px-10 border border-[#63655d] rounded-2xl sm:rounded-3xl shadow-2xl space-y-6">
+        <div className="bg-[#222428] py-8 px-6 sm:px-10 border border-[#34373d] rounded-2xl sm:rounded-3xl shadow-2xl space-y-6">
           
           {errorMsg && (
             <div className="p-3.5 bg-rose-900/40 border border-rose-700/60 rounded-xl text-xs text-rose-200 font-medium flex items-start gap-3 animate-in fade-in duration-200">
@@ -152,7 +152,7 @@ export const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   required
-                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#1d1e21] border border-[#34373d] rounded-xl text-white placeholder-gray-400 focus:bg-[#18191b] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
               </div>
             </div>
@@ -182,7 +182,7 @@ export const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-10 pr-11 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
+                  className="w-full pl-10 pr-11 py-2.5 text-xs bg-[#1d1e21] border border-[#34373d] rounded-xl text-white placeholder-gray-400 focus:bg-[#18191b] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
                 <button
                   type="button"
@@ -202,7 +202,7 @@ export const Login = () => {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-[#63655d] bg-[#3b3d37] text-[#316d7a] focus:ring-[#316d7a] cursor-pointer"
+                  className="w-4 h-4 rounded border-[#34373d] bg-[#1d1e21] text-[#316d7a] focus:ring-[#316d7a] cursor-pointer"
                 />
                 <span>Remember this device</span>
               </label>
@@ -238,7 +238,7 @@ export const Login = () => {
           </form>
 
           {/* Footer badge */}
-          <div className="pt-4 border-t border-[#63655d] text-center flex items-center justify-center gap-1.5 text-[11px] text-gray-300 font-medium">
+          <div className="pt-4 border-t border-[#34373d] text-center flex items-center justify-center gap-1.5 text-[11px] text-gray-300 font-medium">
             <ShieldCheck className="w-4 h-4 text-[#316d7a]" />
             <span>Secured by Supabase Authentication</span>
           </div>
@@ -248,7 +248,7 @@ export const Login = () => {
       {/* Forgot Password Modal */}
       {isResetModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-[#444640] border border-[#63655d] w-full max-w-md rounded-2xl p-6 sm:p-8 shadow-2xl relative space-y-5 text-white">
+          <div className="bg-[#222428] border border-[#34373d] w-full max-w-md rounded-2xl p-6 sm:p-8 shadow-2xl relative space-y-5 text-white">
             <button
               onClick={() => setIsResetModalOpen(false)}
               className="absolute top-5 right-5 text-gray-300 hover:text-white transition-colors"
@@ -296,7 +296,7 @@ export const Login = () => {
                     onChange={(e) => setResetEmail(e.target.value)}
                     placeholder="name@example.com"
                     required
-                    className="w-full pl-10 pr-4 py-2 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#316d7a]"
+                    className="w-full pl-10 pr-4 py-2 text-xs bg-[#1d1e21] border border-[#34373d] rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#316d7a]"
                   />
                 </div>
               </div>

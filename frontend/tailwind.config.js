@@ -8,10 +8,10 @@ export default {
     extend: {
       colors: {
         app: {
-          bg: '#51534d',
-          card: '#444640',
-          darkCard: '#3b3d37',
-          border: '#63655d',
+          bg: '#18191b',
+          card: '#222428',
+          darkCard: '#1d1e21',
+          border: '#34373d',
           accent: '#316d7a',
           accentHover: '#275863',
         }

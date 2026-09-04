@@ -55,8 +55,8 @@ export const FolderCard = ({ folder, isTrash = false }) => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onClick={() => !isTrash && setCurrentFolderId(folder.id)}
-      className={`group relative bg-[#444640] border rounded-xl p-3.5 hover:shadow-md hover:border-[#316d7a] transition-all cursor-pointer select-none ${
-        isDragOver ? 'border-[#316d7a] bg-[#3b3d37] ring-2 ring-[#316d7a]/50' : 'border-[#63655d]'
+      className={`group relative bg-[#222428] border rounded-xl p-3.5 hover:shadow-md hover:border-[#316d7a] transition-all cursor-pointer select-none ${
+        isDragOver ? 'border-[#316d7a] bg-[#1d1e21] ring-2 ring-[#316d7a]/50' : 'border-[#34373d]'
       }`}
     >
       <div className="flex items-center justify-between mb-2">

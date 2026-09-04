@@ -79,13 +79,13 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#51534d] text-white flex flex-col justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#316d7a] selection:text-white">
+    <div className="min-h-screen bg-[#18191b] text-white flex flex-col justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#316d7a] selection:text-white">
       {/* Main Container */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 space-y-6">
         
         {/* Header Branding */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-[#444640] border border-[#63655d] rounded-2xl shadow-md">
+          <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-[#222428] border border-[#34373d] rounded-2xl shadow-md">
             <Cloud className="w-6 h-6 text-[#316d7a] fill-[#316d7a] stroke-[1.5]" />
             <span className="text-xl font-bold tracking-tight text-white">
               CloudDrive
@@ -97,14 +97,14 @@ export const Register = () => {
           </h1>
           <p className="text-xs text-gray-300 font-medium">
             Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-white underline hover:text-gray-200">
+            <Link to="/login" className="font-semibold text-[#316d7a] hover:text-[#275863] underline">
               Sign in instead
             </Link>
           </p>
         </div>
 
         {/* Card Form */}
-        <div className="bg-[#444640] py-8 px-6 sm:px-10 border border-[#63655d] rounded-2xl sm:rounded-3xl shadow-2xl space-y-6">
+        <div className="bg-[#222428] py-8 px-6 sm:px-10 border border-[#34373d] rounded-2xl sm:rounded-3xl shadow-2xl space-y-6">
           
           {errorMsg && (
             <div className="p-3.5 bg-rose-900/40 border border-rose-700/60 rounded-xl text-xs text-rose-200 font-medium flex items-start gap-3 animate-in fade-in duration-200">
@@ -140,7 +140,7 @@ export const Register = () => {
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Krish Bangade"
                   required
-                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#1d1e21] border border-[#34373d] rounded-xl text-white placeholder-gray-400 focus:bg-[#18191b] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
               </div>
             </div>
@@ -158,7 +158,7 @@ export const Register = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   required
-                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#1d1e21] border border-[#34373d] rounded-xl text-white placeholder-gray-400 focus:bg-[#18191b] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
               </div>
             </div>
@@ -176,7 +176,7 @@ export const Register = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
                   required
-                  className="w-full pl-10 pr-11 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
+                  className="w-full pl-10 pr-11 py-2.5 text-xs bg-[#1d1e21] border border-[#34373d] rounded-xl text-white placeholder-gray-400 focus:bg-[#18191b] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
                 <button
                   type="button"
@@ -190,7 +190,7 @@ export const Register = () => {
 
               {/* Dynamic Password Feedback */}
               {password && (
-                <div className="mt-2 p-2.5 bg-[#3b3d37] border border-[#63655d] rounded-xl space-y-1.5 text-[11px]">
+                <div className="mt-2 p-2.5 bg-[#1d1e21] border border-[#34373d] rounded-xl space-y-1.5 text-[11px]">
                   <div className="flex items-center gap-2">
                     {hasMinLength ? (
                       <Check className="w-3.5 h-3.5 text-emerald-400" />
@@ -228,7 +228,7 @@ export const Register = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter password"
                   required
-                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#1d1e21] border border-[#34373d] rounded-xl text-white placeholder-gray-400 focus:bg-[#18191b] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
               </div>
 
@@ -260,7 +260,7 @@ export const Register = () => {
           </form>
 
           {/* Footer badge */}
-          <div className="pt-4 border-t border-[#63655d] text-center flex items-center justify-center gap-1.5 text-[11px] text-gray-300 font-medium">
+          <div className="pt-4 border-t border-[#34373d] text-center flex items-center justify-center gap-1.5 text-[11px] text-gray-300 font-medium">
             <ShieldCheck className="w-4 h-4 text-[#316d7a]" />
             <span>Encrypted & Powered by Supabase Auth</span>
           </div>

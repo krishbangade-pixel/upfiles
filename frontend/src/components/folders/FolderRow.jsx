@@ -54,8 +54,8 @@ export const FolderRow = ({ folder, isTrash = false }) => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onClick={() => !isTrash && setCurrentFolderId(folder.id)}
-      className={`border-b border-[#63655d] hover:bg-[#51534d] transition-colors cursor-pointer text-xs ${
-        isDragOver ? 'bg-[#3b3d37] border-[#316d7a]' : ''
+      className={`border-b border-[#34373d] hover:bg-[#18191b] transition-colors cursor-pointer text-xs ${
+        isDragOver ? 'bg-[#1d1e21] border-[#316d7a]' : ''
       }`}
     >
       <td className="py-3 px-4 flex items-center gap-3 font-medium text-white truncate max-w-xs">

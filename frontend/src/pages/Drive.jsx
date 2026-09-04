@@ -69,7 +69,7 @@ export const Drive = () => {
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
       {/* Top Header Controls Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#63655d] pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#34373d] pb-3">
         <div>
           <h1 className="text-xl font-bold text-white tracking-tight">My Drive</h1>
           <Breadcrumbs />
@@ -78,17 +78,17 @@ export const Drive = () => {
         {/* View & Sorting Toolbar */}
         <div className="flex items-center gap-2 self-end sm:self-auto">
           {/* Sort Control */}
-          <div className="flex items-center gap-1 bg-[#444640] border border-[#63655d] rounded-xl px-2.5 py-1 text-xs text-gray-200">
+          <div className="flex items-center gap-1 bg-[#222428] border border-[#34373d] rounded-xl px-2.5 py-1 text-xs text-gray-200">
             <span className="text-gray-300 font-medium">Sort by</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className="bg-transparent font-semibold text-white focus:outline-none cursor-pointer"
             >
-              <option value="name" className="bg-[#444640] text-white">Name</option>
-              <option value="modified" className="bg-[#444640] text-white">Last modified</option>
-              <option value="size" className="bg-[#444640] text-white">Size</option>
-              <option value="type" className="bg-[#444640] text-white">Type</option>
+              <option value="name" className="bg-[#222428] text-white">Name</option>
+              <option value="modified" className="bg-[#222428] text-white">Last modified</option>
+              <option value="size" className="bg-[#222428] text-white">Size</option>
+              <option value="type" className="bg-[#222428] text-white">Type</option>
             </select>
             <button
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
@@ -100,7 +100,7 @@ export const Drive = () => {
           </div>
 
           {/* Grid / List View Toggle */}
-          <div className="flex items-center bg-[#444640] border border-[#63655d] rounded-xl p-0.5">
+          <div className="flex items-center bg-[#222428] border border-[#34373d] rounded-xl p-0.5">
             <button
               onClick={() => setViewMode('grid')}
               className={`p-1.5 rounded-lg transition-colors ${

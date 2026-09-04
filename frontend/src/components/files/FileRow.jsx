@@ -25,7 +25,7 @@ export const FileRow = ({ file, isTrash = false }) => {
       draggable={!isTrash}
       onDragStart={handleDragStart}
       onClick={() => openModal('preview', file)}
-      className="border-b border-[#63655d] hover:bg-[#51534d] transition-colors cursor-pointer text-xs"
+      className="border-b border-[#34373d] hover:bg-[#18191b] transition-colors cursor-pointer text-xs"
     >
       <td className="py-3 px-4 flex items-center gap-3 font-medium text-white truncate max-w-xs">
         <FileIcon type={file.type} extension={file.extension} className="w-4 h-4 flex-shrink-0" />

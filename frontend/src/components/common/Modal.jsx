@@ -26,13 +26,13 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-md' 
         aria-hidden="true"
       />
       <div
-        className={`relative bg-[#444640] rounded-2xl border border-[#63655d] text-white shadow-2xl w-full ${maxWidth} z-10 overflow-hidden transform transition-all animate-scale-up`}
+        className={`relative bg-[#222428] rounded-2xl border border-[#34373d] text-white shadow-2xl w-full ${maxWidth} z-10 overflow-hidden transform transition-all animate-scale-up`}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#63655d]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#34373d]">
           <h3 className="text-base font-semibold text-white">{title}</h3>
           <button
             onClick={onClose}
-            className="text-gray-300 hover:text-white hover:bg-[#51534d] p-1.5 rounded-lg transition-colors"
+            className="text-gray-300 hover:text-white hover:bg-[#18191b] p-1.5 rounded-lg transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

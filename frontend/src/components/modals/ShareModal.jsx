@@ -259,7 +259,7 @@ export const ShareModal = () => {
       <div className="space-y-6">
         {/* Section 1: Add People Input with Autocomplete */}
         <div className="space-y-2 relative">
-          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider">
+          <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider">
             Add people, groups, and calendar events
           </label>
           <form onSubmit={handleAddShare} className="flex gap-2">
@@ -269,24 +269,24 @@ export const ShareModal = () => {
                 value={query}
                 onChange={handleQueryChange}
                 placeholder="Enter name or email address"
-                className="w-full px-3.5 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900 bg-white"
+                className="w-full px-3.5 py-2 text-xs border border-[#34373d] rounded-xl focus:outline-none focus:border-[#316d7a] bg-[#1d1e21] text-white placeholder-gray-400"
               />
 
               {/* Autocomplete Suggestions Overlay */}
               {suggestions.length > 0 && (
-                <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-50 divide-y divide-gray-100 max-h-48 overflow-y-auto">
+                <div className="absolute left-0 right-0 top-full mt-1 bg-[#1d1e21] border border-[#34373d] rounded-xl shadow-xl z-50 divide-y divide-[#34373d] max-h-48 overflow-y-auto">
                   {suggestions.map((u) => (
                     <div
                       key={u.id}
                       onClick={() => handleSelectSuggestion(u)}
-                      className="flex items-center gap-3 p-2.5 hover:bg-gray-50 cursor-pointer transition-colors"
+                      className="flex items-center gap-3 p-2.5 hover:bg-[#18191b] cursor-pointer transition-colors"
                     >
-                      <div className="w-7 h-7 rounded-full bg-zinc-900 text-white flex items-center justify-center font-semibold text-xs shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-[#316d7a] text-white flex items-center justify-center font-semibold text-xs shrink-0">
                         {u.initials}
                       </div>
                       <div className="truncate">
-                        <p className="text-xs font-medium text-gray-900 truncate">{u.name}</p>
-                        <p className="text-[11px] text-gray-500 truncate">{u.email}</p>
+                        <p className="text-xs font-medium text-white truncate">{u.name}</p>
+                        <p className="text-[11px] text-gray-400 truncate">{u.email}</p>
                       </div>
                     </div>
                   ))}
@@ -303,16 +303,16 @@ export const ShareModal = () => {
             <select
               value={inputRole}
               onChange={(e) => setInputRole(e.target.value)}
-              className="px-3 py-2 text-xs border border-gray-300 rounded-lg bg-white font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-zinc-900 cursor-pointer"
+              className="px-3 py-2 text-xs border border-[#34373d] rounded-xl bg-[#1d1e21] font-medium text-gray-200 focus:outline-none focus:border-[#316d7a] cursor-pointer"
             >
-              <option value="Viewer">Viewer</option>
-              <option value="Editor">Editor</option>
+              <option value="Viewer" className="bg-[#1d1e21]">Viewer</option>
+              <option value="Editor" className="bg-[#1d1e21]">Editor</option>
             </select>
 
             <button
               type="submit"
               disabled={!query.trim() || sharingInProgress}
-              className="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 rounded-lg transition-colors flex items-center gap-1.5 shrink-0"
+              className="px-4 py-2 text-xs font-semibold text-white bg-[#316d7a] hover:bg-[#275863] disabled:opacity-50 rounded-xl transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"
             >
               <UserPlus className="w-3.5 h-3.5" />
               {sharingInProgress ? 'Sending...' : 'Send'}
@@ -322,40 +322,40 @@ export const ShareModal = () => {
 
         {/* Section 2: People With Access List */}
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+          <p className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
             People with access
           </p>
 
           {loading ? (
             <div className="p-4 text-center text-xs text-gray-400">Loading access list...</div>
           ) : (
-            <div className="border border-gray-200 rounded-xl divide-y divide-gray-100 max-h-52 overflow-y-auto bg-white">
+            <div className="border border-[#34373d] rounded-xl divide-y divide-[#34373d] max-h-52 overflow-y-auto bg-[#1d1e21]">
               {/* Owner Row */}
               <div className="flex items-center justify-between p-3 text-xs">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[#316d7a] text-white flex items-center justify-center font-bold text-xs shrink-0">
                     {ownerInitials}
                   </div>
                   <div className="truncate max-w-[220px]">
-                    <p className="font-medium text-gray-900 truncate">{ownerName}</p>
-                    <p className="text-[11px] text-gray-500 truncate">{ownerEmail}</p>
+                    <p className="font-medium text-white truncate">{ownerName}</p>
+                    <p className="text-[11px] text-gray-400 truncate">{ownerEmail}</p>
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-gray-400 px-2 py-1 rounded bg-gray-50">
+                <span className="text-xs font-semibold text-gray-300 px-2.5 py-1 rounded-lg bg-[#18191b] border border-[#34373d]">
                   Owner
                 </span>
               </div>
 
               {/* Shared Users Rows */}
               {sharesList.map((s) => (
-                <div key={s.id} className="flex items-center justify-between p-3 text-xs hover:bg-gray-50/50 transition-colors">
+                <div key={s.id} className="flex items-center justify-between p-3 text-xs hover:bg-[#18191b]/50 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#316d7a]/20 text-[#316d7a] border border-[#316d7a]/40 flex items-center justify-center font-bold text-xs shrink-0">
                       {s.initials}
                     </div>
                     <div className="truncate max-w-[200px]">
-                      <p className="font-medium text-gray-900 truncate">{s.name}</p>
-                      <p className="text-[11px] text-gray-500 truncate">{s.granteeEmail}</p>
+                      <p className="font-medium text-white truncate">{s.name}</p>
+                      <p className="text-[11px] text-gray-400 truncate">{s.granteeEmail}</p>
                     </div>
                   </div>
 
@@ -363,15 +363,15 @@ export const ShareModal = () => {
                     <select
                       value={s.role}
                       onChange={(e) => handleRoleChange(s, e.target.value)}
-                      className="px-2.5 py-1 text-xs border border-gray-200 rounded-md bg-white font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-zinc-900 cursor-pointer"
+                      className="px-2.5 py-1 text-xs border border-[#34373d] rounded-lg bg-[#18191b] font-medium text-gray-200 focus:outline-none focus:border-[#316d7a] cursor-pointer"
                     >
-                      <option value="Viewer">Viewer</option>
-                      <option value="Editor">Editor</option>
+                      <option value="Viewer" className="bg-[#1d1e21]">Viewer</option>
+                      <option value="Editor" className="bg-[#1d1e21]">Editor</option>
                     </select>
 
                     <button
                       onClick={() => setRemoveConfirmTarget(s)}
-                      className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
+                      className="p-1.5 text-gray-400 hover:text-rose-400 hover:bg-rose-950/40 rounded-lg transition-colors"
                       title="Remove access"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -389,18 +389,18 @@ export const ShareModal = () => {
           )}
         </div>
 
-        {/* Section 3: General Access (Google Drive-Style) */}
-        <div className="space-y-3 pt-2 border-t border-gray-100">
-          <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+        {/* Section 3: General Access */}
+        <div className="space-y-3 pt-2 border-t border-[#34373d]">
+          <p className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
             General access
           </p>
 
-          <div className="flex items-start gap-3 p-3 bg-gray-50/80 border border-gray-200 rounded-xl">
-            <div className="p-2 bg-white rounded-lg border border-gray-200 text-gray-700 shrink-0 mt-0.5">
+          <div className="flex items-start gap-3 p-3 bg-[#1d1e21] border border-[#34373d] rounded-xl">
+            <div className="p-2 bg-[#18191b] rounded-lg border border-[#34373d] text-gray-300 shrink-0 mt-0.5">
               {generalAccess === 'anyone' ? (
-                <Globe className="w-4 h-4 text-emerald-600" />
+                <Globe className="w-4 h-4 text-[#316d7a]" />
               ) : (
-                <Lock className="w-4 h-4 text-gray-600" />
+                <Lock className="w-4 h-4 text-gray-400" />
               )}
             </div>
 
@@ -409,20 +409,20 @@ export const ShareModal = () => {
                 <select
                   value={generalAccess}
                   onChange={(e) => handleGeneralAccessChange(e.target.value)}
-                  className="bg-transparent font-semibold text-xs text-gray-900 focus:outline-none cursor-pointer border-b border-gray-300 pb-0.5"
+                  className="bg-transparent font-semibold text-xs text-white focus:outline-none cursor-pointer border-b border-[#34373d] pb-0.5"
                 >
-                  <option value="restricted">🔒 Restricted</option>
-                  <option value="anyone">🌐 Anyone with the link</option>
+                  <option value="restricted" className="bg-[#1d1e21]">🔒 Restricted</option>
+                  <option value="anyone" className="bg-[#1d1e21]">🌐 Anyone with the link</option>
                 </select>
 
                 {generalAccess === 'anyone' && (
-                  <span className="text-[11px] font-semibold text-gray-500 bg-white border border-gray-200 px-2 py-0.5 rounded">
+                  <span className="text-[11px] font-semibold text-gray-300 bg-[#18191b] border border-[#34373d] px-2 py-0.5 rounded-md">
                     Viewer
                   </span>
                 )}
               </div>
 
-              <p className="text-[11px] text-gray-500">
+              <p className="text-[11px] text-gray-400">
                 {generalAccess === 'anyone'
                   ? 'Anyone on the Internet with this link can view.'
                   : 'Only people with access can open this file.'}
@@ -430,26 +430,26 @@ export const ShareModal = () => {
 
               {/* Link Expiration & Password options when 'Anyone with the link' is selected */}
               {generalAccess === 'anyone' && (
-                <div className="pt-2 border-t border-gray-200/60 flex flex-wrap items-center gap-3 text-[11px] text-gray-600">
+                <div className="pt-2 border-t border-[#34373d] flex flex-wrap items-center gap-3 text-[11px] text-gray-300">
                   <div className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-gray-400" />
                     <span>Link Expiration:</span>
                     <select
                       value={expirationDays}
                       onChange={(e) => handleExpirationChange(Number(e.target.value))}
-                      className="bg-white border border-gray-200 rounded px-2 py-0.5 text-[11px] font-medium text-gray-800"
+                      className="bg-[#18191b] border border-[#34373d] rounded px-2 py-0.5 text-[11px] font-medium text-gray-200"
                     >
-                      <option value={0}>Never</option>
-                      <option value={1}>1 day</option>
-                      <option value={7}>7 days</option>
-                      <option value={30}>30 days</option>
+                      <option value={0} className="bg-[#1d1e21]">Never</option>
+                      <option value={1} className="bg-[#1d1e21]">1 day</option>
+                      <option value={7} className="bg-[#1d1e21]">7 days</option>
+                      <option value={30} className="bg-[#1d1e21]">30 days</option>
                     </select>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => setShowPasswordInput(!showPasswordInput)}
-                    className="flex items-center gap-1 text-gray-600 hover:text-gray-900 font-medium"
+                    className="flex items-center gap-1 text-gray-300 hover:text-white font-medium"
                   >
                     <Key className="w-3.5 h-3.5 text-gray-400" />
                     Password protection
@@ -462,7 +462,7 @@ export const ShareModal = () => {
                         value={linkPassword}
                         onChange={(e) => setLinkPassword(e.target.value)}
                         placeholder="Enter link protection password"
-                        className="w-full px-2.5 py-1 text-xs border border-gray-300 rounded bg-white"
+                        className="w-full px-2.5 py-1 text-xs border border-[#34373d] rounded bg-[#18191b] text-white"
                       />
                     </div>
                   )}
@@ -473,20 +473,20 @@ export const ShareModal = () => {
         </div>
 
         {/* Section 4: Modal Footer Action Bar */}
-        <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+        <div className="pt-3 border-t border-[#34373d] flex items-center justify-between">
           <button
             type="button"
             onClick={handleCopyLink}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-[#1d1e21] hover:bg-[#18191b] rounded-xl transition-colors border border-[#34373d]"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-gray-600" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-gray-400" />}
             {copied ? 'Link Copied!' : 'Copy link'}
           </button>
 
           <button
             type="button"
             onClick={closeModal}
-            className="px-5 py-2 text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition-colors"
+            className="px-5 py-2 text-xs font-semibold text-white bg-[#316d7a] hover:bg-[#275863] rounded-xl transition-colors"
           >
             Done
           </button>
@@ -495,14 +495,14 @@ export const ShareModal = () => {
 
       {/* Confirmation Dialog for Access Removal */}
       {removeConfirmTarget && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl border border-gray-200 animate-scale-in">
-            <div className="flex items-center gap-3 text-rose-600">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-[#222428] rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl border border-[#34373d] animate-scale-in">
+            <div className="flex items-center gap-3 text-rose-400">
               <AlertTriangle className="w-5 h-5 shrink-0" />
-              <h3 className="text-sm font-bold text-gray-900">Remove access?</h3>
+              <h3 className="text-sm font-bold text-white">Remove access?</h3>
             </div>
 
-            <p className="text-xs text-gray-600 leading-relaxed">
+            <p className="text-xs text-gray-300 leading-relaxed">
               "{removeConfirmTarget.name}" will no longer be able to access this{' '}
               {resourceType}.
             </p>
@@ -510,13 +510,13 @@ export const ShareModal = () => {
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setRemoveConfirmTarget(null)}
-                className="px-3.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="px-3.5 py-1.5 text-xs font-medium text-gray-300 hover:bg-[#18191b] rounded-xl transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmRemove}
-                className="px-3.5 py-1.5 text-xs font-medium text-white bg-rose-600 hover:bg-rose-700 rounded-lg transition-colors"
+                className="px-3.5 py-1.5 text-xs font-medium text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition-colors"
               >
                 Remove
               </button>

@@ -26,14 +26,14 @@ export const MoveModal = () => {
   return (
     <Modal isOpen={isOpen} onClose={closeModal} title={`Move "${item.name}"`}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block text-xs font-medium text-gray-700">Select destination folder:</label>
+        <label className="block text-xs font-semibold text-gray-300">Select destination folder:</label>
 
-        <div className="border border-gray-200 rounded-lg max-h-56 overflow-y-auto divide-y divide-gray-100 text-xs">
+        <div className="border border-[#34373d] rounded-xl max-h-56 overflow-y-auto divide-y divide-[#34373d] text-xs bg-[#1d1e21]">
           {/* Root / My Drive */}
           <div
             onClick={() => setSelectedFolderId(null)}
             className={`flex items-center justify-between p-3 cursor-pointer transition-colors ${
-              selectedFolderId === null ? 'bg-zinc-900 text-white' : 'hover:bg-gray-50 text-gray-800'
+              selectedFolderId === null ? 'bg-[#316d7a] text-white' : 'hover:bg-[#18191b] text-gray-200'
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -48,7 +48,7 @@ export const MoveModal = () => {
               key={f.id}
               onClick={() => setSelectedFolderId(f.id)}
               className={`flex items-center justify-between p-3 cursor-pointer transition-colors ${
-                selectedFolderId === f.id ? 'bg-zinc-900 text-white' : 'hover:bg-gray-50 text-gray-800'
+                selectedFolderId === f.id ? 'bg-[#316d7a] text-white' : 'hover:bg-[#18191b] text-gray-200'
               }`}
             >
               <div className="flex items-center gap-2.5">
@@ -64,13 +64,13 @@ export const MoveModal = () => {
           <button
             type="button"
             onClick={closeModal}
-            className="px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            className="px-4 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-[#18191b] rounded-xl transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition-colors"
+            className="px-4 py-2 text-xs font-semibold text-white bg-[#316d7a] hover:bg-[#275863] rounded-xl transition-colors shadow-xs"
           >
             Move here
           </button>
