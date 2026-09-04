@@ -10,7 +10,6 @@ import { Trash } from './pages/Trash';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
-import { PublicSharePage } from './pages/PublicSharePage';
 
 // Protected Route Guard
 const ProtectedRoute = ({ children }) => {
