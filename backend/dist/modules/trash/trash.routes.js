@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const trash_controller_js_1 = require("./trash.controller.js");
+const auth_js_1 = require("../../middleware/auth.js");
+const validate_js_1 = require("../../middleware/validate.js");
+const router = (0, express_1.Router)();
+router.use(auth_js_1.authenticate);
+router.get('/', trash_controller_js_1.getTrash);
+router.post('/restore', (0, validate_js_1.validate)({ body: trash_controller_js_1.restoreSchema }), trash_controller_js_1.restoreItem);
+router.delete('/:id/permanent', trash_controller_js_1.deletePermanently);
+exports.default = router;

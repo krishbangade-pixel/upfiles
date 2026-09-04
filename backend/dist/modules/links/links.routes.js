@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const links_controller_js_1 = require("./links.controller.js");
+const auth_js_1 = require("../../middleware/auth.js");
+const validate_js_1 = require("../../middleware/validate.js");
+const rateLimiter_js_1 = require("../../middleware/rateLimiter.js");
+const router = (0, express_1.Router)();
+router.post('/', auth_js_1.authenticate, (0, validate_js_1.validate)({ body: links_controller_js_1.createLinkShareSchema }), links_controller_js_1.createLinkShare);
+router.get('/:token', rateLimiter_js_1.publicLinkLimiter, links_controller_js_1.getLinkShare);
+router.delete('/:id', auth_js_1.authenticate, links_controller_js_1.deleteLinkShare);
+exports.default = router;

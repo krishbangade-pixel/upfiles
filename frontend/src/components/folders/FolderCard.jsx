@@ -1,89 +1,76 @@
 import React, { useState } from 'react';
-import { Folder, MoreVertical, Star } from 'lucide-react';
-import { FolderContextMenu } from './FolderContextMenu';
+import { Folder } from 'lucide-react';
+import { FolderActionMenu } from './FolderActionMenu';
+import { useDrive } from '../../context/DriveContext';
 
-export const FolderCard = ({
-  folder,
-  onOpenFolder,
-  onShare,
-  onRename,
-  onMove,
-  onStar,
-  onDelete,
-}) => {
-  const [showMenu, setShowMenu] = useState(false);
-  const folderColor = folder.color || '#7C5CFF';
+export const FolderCard = ({ folder, isTrash = false }) => {
+  const { setCurrentFolderId, files, folders, moveItem } = useDrive();
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  // Count items inside this folder
+  const itemCount =
+    files.filter((f) => f.folderId === folder.id && !f.isTrash).length +
+    folders.filter((f) => f.parentId === folder.id && !f.isTrash).length;
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    try {
+      const data = JSON.parse(e.dataTransfer.getData('application/json'));
+      if (data && data.id) {
+        // Find if item is file or folder
+        const isF = data.isFolder;
+        moveItem({ id: data.id }, isF, folder.id);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData(
+      'application/json',
+      JSON.stringify({ id: folder.id, isFolder: true })
+    );
+  };
 
   return (
     <div
-      onClick={() => onOpenFolder(folder)}
-      className="group relative bg-[#151821] border border-[#252936] rounded-2xl p-4 flex flex-col justify-between cursor-pointer hover:border-[#7C5CFF]/60 purple-glow-hover transition-all duration-200 shadow-md"
+      draggable={!isTrash}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onClick={() => !isTrash && setCurrentFolderId(folder.id)}
+      className={`group relative bg-white border rounded-lg p-3.5 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer select-none ${
+        isDragOver ? 'border-indigo-500 bg-indigo-50/50 ring-2 ring-indigo-200' : 'border-gray-200'
+      }`}
     >
-      {/* Top Header: Folder Icon + Member Badges + Actions */}
-      <div className="flex items-start justify-between mb-4">
-        {/* Folder Icon Container */}
-        <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
-          style={{ backgroundColor: `${folderColor}20`, color: folderColor }}
-        >
-          <Folder className="w-5 h-5 fill-current" />
-        </div>
-
-        {/* Member Avatars & Context Menu */}
-        <div className="flex items-center gap-2">
-          {/* Member avatars */}
-          {folder.members && folder.members.length > 0 && (
-            <div className="flex -space-x-1.5 overflow-hidden">
-              {folder.members.slice(0, 2).map((m, idx) => (
-                <img
-                  key={m.id || idx}
-                  src={m.avatar}
-                  alt={m.name}
-                  title={m.name}
-                  className="inline-block h-6 w-6 rounded-full ring-2 ring-[#151821] object-cover"
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Context menu button */}
-          <div className="relative" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="p-1.5 text-[#6B7280] hover:text-[#F5F7FA] hover:bg-[#191C25] rounded-lg transition-colors"
-            >
-              <MoreVertical className="w-4 h-4" />
-            </button>
-
-            <FolderContextMenu
-              folder={folder}
-              isOpen={showMenu}
-              onClose={() => setShowMenu(false)}
-              onOpenFolder={onOpenFolder}
-              onShare={onShare}
-              onRename={onRename}
-              onMove={onMove}
-              onStar={onStar}
-              onDelete={onDelete}
-            />
-          </div>
+      <div className="flex items-center justify-between mb-2">
+        <Folder className="w-6 h-6 text-gray-700 fill-gray-100 group-hover:text-gray-900 transition-colors" />
+        <div onClick={(e) => e.stopPropagation()}>
+          <FolderActionMenu folder={folder} isTrash={isTrash} />
         </div>
       </div>
-
-      {/* Folder Name & Details */}
-      <div>
-        <div className="flex items-center gap-1.5">
-          <h3 className="text-sm font-semibold text-[#F5F7FA] group-hover:text-[#7C5CFF] truncate transition-colors">
-            {folder.name}
-          </h3>
-          {folder.starred && (
-            <Star className="w-3.5 h-3.5 text-[#F59E0B] fill-[#F59E0B] shrink-0" />
-          )}
-        </div>
-        <p className="text-xs text-[#6B7280] font-medium mt-0.5">
-          {folder.fileCount || 0} files
-        </p>
-      </div>
+      <h4 className="text-sm font-medium text-gray-900 truncate pr-2" title={folder.name}>
+        {folder.name}
+      </h4>
+      <p className="text-xs text-gray-500 mt-1">
+        {itemCount} {itemCount === 1 ? 'item' : 'items'}
+      </p>
     </div>
   );
 };

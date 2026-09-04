@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const folders_controller_js_1 = require("./folders.controller.js");
+const auth_js_1 = require("../../middleware/auth.js");
+const validate_js_1 = require("../../middleware/validate.js");
+const router = (0, express_1.Router)();
+router.use(auth_js_1.authenticate);
+router.post('/', (0, validate_js_1.validate)({ body: folders_controller_js_1.createFolderSchema }), folders_controller_js_1.createFolder);
+router.get('/', folders_controller_js_1.listAllFolders);
+router.get('/:id', folders_controller_js_1.getFolder);
+router.get('/:id/children', folders_controller_js_1.getFolderChildren);
+router.patch('/:id', (0, validate_js_1.validate)({ body: folders_controller_js_1.updateFolderSchema }), folders_controller_js_1.updateFolder);
+router.delete('/:id', folders_controller_js_1.deleteFolder);
+exports.default = router;

@@ -1,52 +1,79 @@
 import React from 'react';
 import {
   FileText,
-  Image,
-  Video,
-  Music,
-  FileCode,
-  Archive,
   FileSpreadsheet,
-  File
+  Presentation,
+  FileCode,
+  FileArchive,
+  Image as ImageIcon,
+  Video,
+  File,
+  Layers,
+  PenTool,
 } from 'lucide-react';
-import { getFileTypeCategory } from '../../utils/formatters';
 
 const FigmaIcon = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} viewBox="0 0 38 57" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M19 28.5C19 23.2533 23.2533 19 28.5 19C33.7467 19 38 23.2533 38 28.5C38 33.7467 33.7467 38 28.5 38H19V28.5Z" fill="#1ABCFE"/>
-    <path d="M0 47.5C0 42.2533 4.25329 38 9.5 38H19V47.5C19 52.7467 14.7467 57 9.5 57C4.25329 57 0 52.7467 0 47.5Z" fill="#0ACF83"/>
-    <path d="M19 0V19H28.5C33.7467 19 38 14.7467 38 9.5C38 4.25329 33.7467 0 28.5 0H19Z" fill="#FF7262"/>
-    <path d="M0 9.5C0 14.7467 4.25329 19 9.5 19H19V0H9.5C4.25329 0 0 4.25329 0 9.5Z" fill="#F24E1E"/>
-    <path d="M0 28.5C0 33.7467 4.25329 38 9.5 38H19V19H9.5C4.25329 19 0 23.2533 0 28.5Z" fill="#A259FF"/>
+  <svg
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    stroke="currentColor"
+    strokeWidth="2"
+    fill="none"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={`${className} text-purple-600`}
+  >
+    <path d="M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z" />
+    <path d="M12 2h3.5a3.5 3.5 0 1 1 0 7H12V2z" />
+    <path d="M12 12.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 1 1-7 0z" />
+    <path d="M5 19.5A3.5 3.5 0 0 1 8.5 16H12v3.5a3.5 3.5 0 1 1-7 0z" />
+    <path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z" />
   </svg>
 );
 
-export const FileIcon = ({ fileName = '', type = '', extension = '', className = 'w-5 h-5' }) => {
-  const cat = getFileTypeCategory(fileName, type);
-  const ext = (extension || fileName.split('.').pop() || '').toLowerCase();
+export const FileIcon = ({ type, extension, className = 'w-5 h-5' }) => {
+  const ext = (extension || type || '').toLowerCase();
 
-  if (ext === 'fig') {
+  if (['pdf'].includes(ext)) {
+    return <FileText className={`${className} text-red-500`} />;
+  }
+
+  if (['doc', 'docx'].includes(ext)) {
+    return <FileText className={`${className} text-blue-600`} />;
+  }
+
+  if (['xls', 'xlsx', 'csv'].includes(ext)) {
+    return <FileSpreadsheet className={`${className} text-emerald-600`} />;
+  }
+
+  if (['ppt', 'pptx'].includes(ext)) {
+    return <Presentation className={`${className} text-orange-500`} />;
+  }
+
+  if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext)) {
+    return <ImageIcon className={`${className} text-purple-500`} />;
+  }
+
+  if (['mp4', 'mov', 'avi', 'mkv'].includes(ext)) {
+    return <Video className={`${className} text-indigo-500`} />;
+  }
+
+  if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) {
+    return <FileArchive className={`${className} text-amber-600`} />;
+  }
+
+  if (['txt', 'md', 'json', 'js', 'jsx', 'ts', 'tsx'].includes(ext)) {
+    return <FileCode className={`${className} text-gray-500`} />;
+  }
+
+  if (['figma', 'fig'].includes(ext)) {
     return <FigmaIcon className={className} />;
   }
 
-  switch (cat) {
-    case 'image':
-      return <Image className={`${className} text-[#4F8EF7]`} />;
-    case 'video':
-      return <Video className={`${className} text-[#7C5CFF]`} />;
-    case 'audio':
-      return <Music className={`${className} text-[#F59E0B]`} />;
-    case 'pdf':
-      return <FileText className={`${className} text-[#EF4444]`} />;
-    case 'document':
-      return <FileText className={`${className} text-[#4F8EF7]`} />;
-    case 'spreadsheet':
-      return <FileSpreadsheet className={`${className} text-[#22C55E]`} />;
-    case 'design':
-      return <FileCode className={`${className} text-[#EC4899]`} />;
-    case 'archive':
-      return <Archive className={`${className} text-[#F59E0B]`} />;
-    default:
-      return <File className={`${className} text-[#9CA3AF]`} />;
+  if (['psd'].includes(ext)) {
+    return <Layers className={`${className} text-blue-700`} />;
   }
+
+  return <File className={`${className} text-gray-400`} />;
 };

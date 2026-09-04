@@ -1,135 +1,153 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
+  Cloud,
+  Plus,
   HardDrive,
   Users,
-  Star,
   Clock,
+  Star,
   Trash2,
-  Settings,
-  HelpCircle,
-  Shield,
-  Cloud,
-  X
+  FolderPlus,
+  Upload,
+  FolderUp,
+  X,
 } from 'lucide-react';
+import { useDrive } from '../../context/DriveContext';
 
-export const Sidebar = ({ isOpen, onClose }) => {
-  const mainNavItems = [
-    { label: 'My Drive', path: '/drive', icon: HardDrive },
-    { label: 'Shared', path: '/shared', icon: Users },
-    { label: 'Starred', path: '/starred', icon: Star },
-    { label: 'Recent', path: '/recent', icon: Clock },
-    { label: 'Trash', path: '/trash', icon: Trash2 },
+export const Sidebar = () => {
+  const { storageInfo, openModal, sidebarOpen, setSidebarOpen } = useDrive();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const navItems = [
+    { name: 'My Drive', path: '/drive', icon: HardDrive },
+    { name: 'Shared with me', path: '/shared', icon: Users },
+    { name: 'Recent', path: '/recent', icon: Clock },
+    { name: 'Starred', path: '/starred', icon: Star },
+    { name: 'Trash', path: '/trash', icon: Trash2 },
   ];
 
-  const bottomNavItems = [
-    { label: 'Settings', path: '/settings', icon: Settings },
-    { label: 'Help', path: '/help', icon: HelpCircle },
-  ];
+  const handleDropdownAction = (modalType) => {
+    setDropdownOpen(false);
+    openModal(modalType);
+  };
 
   return (
     <>
-      {/* Mobile Backdrop Overlay */}
-      {isOpen && (
+      {/* Mobile Backdrop */}
+      {sidebarOpen && (
         <div
-          onClick={onClose}
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity"
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/40 z-40 sm:hidden"
         />
       )}
 
       <aside
-        className={`fixed top-0 left-0 z-50 h-screen w-64 bg-[#0F1117] border-r border-[#252936] flex flex-col justify-between p-5 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed sm:static inset-y-0 left-0 z-40 w-[210px] min-w-[210px] flex-shrink-0 bg-white border-r border-gray-200 flex flex-col justify-between p-4 transition-transform duration-200 ease-in-out ${
+          sidebarOpen ? 'translate-x-0' : 'max-sm:-translate-x-full'
         }`}
       >
-        <div>
-          {/* Brand Logo & Title */}
-          <div className="flex items-center justify-between mb-8 px-2">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#7C5CFF] to-[#4F8EF7] flex items-center justify-center shadow-lg shadow-[#7C5CFF]/20">
-                <Cloud className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-[#F5F7FA] tracking-wide">
-                  Cloud<span className="text-[#7C5CFF]">Vault</span>
-                </h1>
-                <p className="text-[11px] text-[#6B7280] font-medium">Enterprise Cloud</p>
-              </div>
+        {/* Top Header & Navigation */}
+        <div className="space-y-5">
+          {/* Brand Logo */}
+          <div className="flex items-center justify-between px-2">
+            <div className="flex items-center gap-2 text-gray-900 font-bold text-lg tracking-tight select-none">
+              <Cloud className="w-6 h-6 text-zinc-900 fill-zinc-900 stroke-[1.5]" />
+              <span>CloudDrive</span>
             </div>
-
-            {/* Mobile Close Button */}
             <button
-              onClick={onClose}
-              className="lg:hidden text-[#9CA3AF] hover:text-[#F5F7FA] p-1 rounded-lg hover:bg-[#151821]"
+              onClick={() => setSidebarOpen(false)}
+              className="sm:hidden text-gray-400 hover:text-gray-600 p-1"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="space-y-1.5">
-            <div className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#6B7280]">
-              Storage
-            </div>
-            {mainNavItems.map((item) => {
+          {/* + New Button with Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="w-full flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white font-medium text-xs py-2.5 px-4 rounded-xl shadow-xs transition-all active:scale-[0.98] cursor-pointer"
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span>New</span>
+            </button>
+
+            {dropdownOpen && (
+              <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1.5 z-50 text-xs font-medium text-gray-700 animate-fade-in">
+                <button
+                  onClick={() => handleDropdownAction('newFolder')}
+                  className="w-full text-left px-3.5 py-2 hover:bg-gray-50 flex items-center gap-2.5 cursor-pointer"
+                >
+                  <FolderPlus className="w-4 h-4 text-gray-500" />
+                  New Folder
+                </button>
+                <div className="my-1 border-t border-gray-100" />
+                <button
+                  onClick={() => handleDropdownAction('upload')}
+                  className="w-full text-left px-3.5 py-2 hover:bg-gray-50 flex items-center gap-2.5 cursor-pointer"
+                >
+                  <Upload className="w-4 h-4 text-gray-500" />
+                  Upload Files
+                </button>
+                <button
+                  onClick={() => handleDropdownAction('upload')}
+                  className="w-full text-left px-3.5 py-2 hover:bg-gray-50 flex items-center gap-2.5 cursor-pointer"
+                >
+                  <FolderUp className="w-4 h-4 text-gray-500" />
+                  Upload Folder
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Nav List */}
+          <nav className="space-y-1">
+            {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <NavLink
                   key={item.path}
                   to={item.path}
-                  onClick={onClose}
+                  onClick={() => setSidebarOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                    `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-colors ${
                       isActive
-                        ? 'bg-[#7C5CFF]/15 text-[#7C5CFF] border border-[#7C5CFF]/30 shadow-md shadow-[#7C5CFF]/10 font-semibold'
-                        : 'text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#151821]'
+                        ? 'bg-gray-100 text-gray-900 font-semibold'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`
                   }
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span>{item.name}</span>
                 </NavLink>
               );
             })}
           </nav>
         </div>
 
-        {/* Bottom Menu & Profile Summary */}
-        <div className="space-y-4 pt-4 border-t border-[#252936]">
-          <div className="space-y-1">
-            {bottomNavItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  onClick={onClose}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                      isActive
-                        ? 'bg-[#7C5CFF]/15 text-[#7C5CFF] border border-[#7C5CFF]/30 font-semibold'
-                        : 'text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#151821]'
-                    }`
-                  }
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </NavLink>
-              );
-            })}
+        {/* Bottom Storage Information */}
+        <div className="pt-4 border-t border-gray-100 space-y-2 text-xs">
+          <div className="flex items-center gap-2 text-gray-600 font-medium">
+            <HardDrive className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
+            <span className="truncate">{storageInfo.formattedText}</span>
           </div>
-
-          {/* User Profile Card */}
-          <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#151821] border border-[#252936]">
-            <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
-              alt="Alex Vance"
-              className="w-9 h-9 rounded-full object-cover border border-[#7C5CFF]/40"
+          <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+            <div
+              className="bg-zinc-900 h-1.5 rounded-full transition-all duration-300"
+              style={{ width: `${storageInfo.percentage}%` }}
             />
-            <div className="overflow-hidden">
-              <h4 className="text-xs font-semibold text-[#F5F7FA] truncate">Alex Vance</h4>
-              <p className="text-[11px] text-[#6B7280] truncate">alex.vance@cloudvault.io</p>
-            </div>
           </div>
         </div>
       </aside>

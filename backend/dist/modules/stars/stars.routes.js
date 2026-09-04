@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const stars_controller_js_1 = require("./stars.controller.js");
+const auth_js_1 = require("../../middleware/auth.js");
+const validate_js_1 = require("../../middleware/validate.js");
+const router = (0, express_1.Router)();
+router.use(auth_js_1.authenticate);
+router.post('/', (0, validate_js_1.validate)({ body: stars_controller_js_1.starSchema }), stars_controller_js_1.starResource);
+router.delete('/', (0, validate_js_1.validate)({ body: stars_controller_js_1.starSchema }), stars_controller_js_1.unstarResource);
+router.get('/', stars_controller_js_1.getStarred);
+exports.default = router;

@@ -1,67 +1,125 @@
-import { MOCK_FOLDERS } from '../data/mockData';
-import { getStoredItem, setStoredItem, STORAGE_KEYS } from '../utils/storage';
+import { api } from '../lib/api';
 
 export const folderService = {
-  getFolders: async (parentId = null) => {
-    // Simulate API delay
-    await new Promise((res) => setTimeout(res, 150));
-    const allFolders = getStoredItem(STORAGE_KEYS.FOLDERS, MOCK_FOLDERS);
-    return allFolders.filter((f) => f.parentId === parentId);
+  getFolders: async (userId) => {
+    try {
+      const res = await api.get('/folders');
+      const folders = res.data || [];
+      return folders
+        .filter((f) => !f.isTrash && !f.isDeleted)
+        .map((f) => ({
+          id: f.id,
+          name: f.name,
+          parentId: f.parentId || f.parent_id,
+          ownerId: f.ownerId || f.owner_id,
+          isStarred: !!f.isStarred,
+          isTrash: !!f.isTrash,
+          createdAt: f.createdAt || f.created_at,
+          updatedAt: f.updatedAt || f.updated_at,
+        }));
+    } catch (err) {
+      console.error('folderService.getFolders failed:', err);
+      return [];
+    }
   },
 
-  getAllFolders: async () => {
-    await new Promise((res) => setTimeout(res, 100));
-    return getStoredItem(STORAGE_KEYS.FOLDERS, MOCK_FOLDERS);
+  createFolder: async (name, parentId, userId) => {
+    if (!name) return null;
+    try {
+      const payload = {
+        name: name.trim(),
+        parentId: parentId || null,
+      };
+
+      const res = await api.post('/folders', payload);
+      const data = res.data;
+
+      return {
+        id: data.id,
+        name: data.name,
+        parentId: data.parentId || data.parent_id,
+        ownerId: data.ownerId || data.owner_id,
+        isStarred: !!data.isStarred,
+        isTrash: !!data.isTrash,
+        createdAt: data.createdAt || data.created_at,
+        updatedAt: data.updatedAt || data.updated_at,
+      };
+    } catch (err) {
+      console.error('folderService.createFolder failed:', err);
+      throw err;
+    }
   },
 
-  getFolderById: async (id) => {
-    const allFolders = getStoredItem(STORAGE_KEYS.FOLDERS, MOCK_FOLDERS);
-    return allFolders.find((f) => f.id === id) || null;
+  renameFolder: async (folderId, newName) => {
+    try {
+      const res = await api.patch(`/folders/${folderId}`, {
+        name: newName.trim(),
+      });
+      return res.data;
+    } catch (err) {
+      console.error('folderService.renameFolder failed:', err);
+      throw err;
+    }
   },
 
-  createFolder: async ({ name, parentId = null, color = '#7C5CFF' }) => {
-    await new Promise((res) => setTimeout(res, 200));
-    const allFolders = getStoredItem(STORAGE_KEYS.FOLDERS, MOCK_FOLDERS);
-    
-    const newFolder = {
-      id: `f-${Date.now()}`,
-      name,
-      fileCount: 0,
-      size: 0,
-      parentId,
-      createdAt: new Date().toISOString(),
-      starred: false,
-      members: [],
-      color,
-    };
+  moveFolder: async (folderId, targetParentId) => {
+    try {
+      if (folderId === targetParentId) {
+        throw new Error('Cannot move folder into itself');
+      }
 
-    const updated = [newFolder, ...allFolders];
-    setStoredItem(STORAGE_KEYS.FOLDERS, updated);
-    return newFolder;
+      const res = await api.patch(`/folders/${folderId}`, {
+        parentId: targetParentId || null,
+      });
+      return res.data;
+    } catch (err) {
+      console.error('folderService.moveFolder failed:', err);
+      throw err;
+    }
   },
 
-  renameFolder: async (id, newName) => {
-    await new Promise((res) => setTimeout(res, 150));
-    const allFolders = getStoredItem(STORAGE_KEYS.FOLDERS, MOCK_FOLDERS);
-    const updated = allFolders.map((f) => (f.id === id ? { ...f, name: newName } : f));
-    setStoredItem(STORAGE_KEYS.FOLDERS, updated);
-    return updated.find((f) => f.id === id);
+  toggleStar: async (folderId, isStarred) => {
+    try {
+      const res = await api.patch(`/folders/${folderId}`, {
+        isStarred: !isStarred,
+      });
+      return res.data;
+    } catch (err) {
+      console.error('folderService.toggleStar failed:', err);
+      throw err;
+    }
   },
 
-  toggleStarFolder: async (id) => {
-    await new Promise((res) => setTimeout(res, 100));
-    const allFolders = getStoredItem(STORAGE_KEYS.FOLDERS, MOCK_FOLDERS);
-    const updated = allFolders.map((f) => (f.id === id ? { ...f, starred: !f.starred } : f));
-    setStoredItem(STORAGE_KEYS.FOLDERS, updated);
-    return updated.find((f) => f.id === id);
+  deleteFolder: async (folderId) => {
+    try {
+      await api.delete(`/folders/${folderId}`);
+      return true;
+    } catch (err) {
+      console.error('folderService.deleteFolder failed:', err);
+      throw err;
+    }
   },
 
-  deleteFolder: async (id) => {
-    await new Promise((res) => setTimeout(res, 200));
-    const allFolders = getStoredItem(STORAGE_KEYS.FOLDERS, MOCK_FOLDERS);
-    const targetFolder = allFolders.find((f) => f.id === id);
-    const updated = allFolders.filter((f) => f.id !== id);
-    setStoredItem(STORAGE_KEYS.FOLDERS, updated);
-    return targetFolder;
-  }
+  restoreFolder: async (folderId) => {
+    try {
+      await api.patch(`/folders/${folderId}`, {
+        isTrash: false,
+      });
+      return true;
+    } catch (err) {
+      console.error('folderService.restoreFolder failed:', err);
+      throw err;
+    }
+  },
+
+  deletePermanently: async (folderId) => {
+    try {
+      await api.delete(`/trash/folders/${folderId}`);
+      return true;
+    } catch (err) {
+      console.error('folderService.deletePermanently failed:', err);
+      throw err;
+    }
+  },
 };
+

@@ -1,29 +1,32 @@
 import React from 'react';
-import { FolderOpen, Search, Star, Trash2, Users, FileX } from 'lucide-react';
+import { FolderOpen, Search, Trash2, Star, Users, Clock } from 'lucide-react';
 
-export const EmptyState = ({ type = 'folder', title, description, action }) => {
+export const EmptyState = ({ type = 'empty', title, message }) => {
   const getIcon = () => {
     switch (type) {
-      case 'search': return Search;
-      case 'starred': return Star;
-      case 'trash': return Trash2;
-      case 'shared': return Users;
-      default: return FolderOpen;
+      case 'search':
+        return <Search className="w-10 h-10 text-gray-300 stroke-[1.5]" />;
+      case 'trash':
+        return <Trash2 className="w-10 h-10 text-gray-300 stroke-[1.5]" />;
+      case 'starred':
+        return <Star className="w-10 h-10 text-gray-300 stroke-[1.5]" />;
+      case 'shared':
+        return <Users className="w-10 h-10 text-gray-300 stroke-[1.5]" />;
+      case 'recent':
+        return <Clock className="w-10 h-10 text-gray-300 stroke-[1.5]" />;
+      default:
+        return <FolderOpen className="w-10 h-10 text-gray-300 stroke-[1.5]" />;
     }
   };
 
-  const Icon = getIcon();
-
   return (
-    <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl bg-[#151821]/50 border border-[#252936] my-6">
-      <div className="w-16 h-16 rounded-2xl bg-[#191C25] border border-[#252936] flex items-center justify-center mb-4 text-[#7C5CFF]">
-        <Icon className="w-8 h-8" />
+    <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+      <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 border border-gray-100">
+        {getIcon()}
       </div>
-      <h3 className="text-base font-bold text-[#F5F7FA]">{title || 'No items found'}</h3>
-      <p className="text-xs text-[#6B7280] max-w-sm mt-1 mb-5">
-        {description || 'There are no files or folders available in this section.'}
+      <p className="text-sm text-gray-500 max-w-sm">
+        {message || 'No matching files or folders found.'}
       </p>
-      {action}
     </div>
   );
 };

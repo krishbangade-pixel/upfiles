@@ -1,65 +1,75 @@
 import React from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Star } from 'lucide-react';
-import { fileService } from '../services/fileService';
-import { FileRow } from '../components/files/FileRow';
+import { useDrive } from '../context/DriveContext';
+import { FileGrid } from '../components/files/FileGrid';
+import { FileList } from '../components/files/FileList';
 import { EmptyState } from '../components/common/EmptyState';
-import { useToast } from '../context/ToastContext';
+import { LayoutGrid, List, Star } from 'lucide-react';
 
-export const StarredPage = ({ onPreview, onDownload, onShare, onRename, onMove, onDelete }) => {
-  const queryClient = useQueryClient();
-  const { addToast } = useToast();
+export const Starred = () => {
+  const { folders, files, searchQuery, viewMode, setViewMode } = useDrive();
 
-  const { data: starredFiles = [], isLoading } = useQuery({
-    queryKey: ['starredFiles'],
-    queryFn: () => fileService.getStarredFiles(),
-  });
+  let starredFolders = folders.filter((f) => !f.isTrash && f.isStarred);
+  let starredFiles = files.filter((f) => !f.isTrash && f.isStarred);
 
-  const unstarMutation = useMutation({
-    mutationFn: (file) => fileService.toggleStarFile(file.id),
-    onSuccess: (updatedFile) => {
-      queryClient.invalidateQueries(['starredFiles']);
-      queryClient.invalidateQueries(['files']);
-      addToast(`Removed "${updatedFile.name}" from favorites`, 'info');
-    },
-  });
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase().trim();
+    starredFolders = starredFolders.filter((f) => f.name.toLowerCase().includes(q));
+    starredFiles = starredFiles.filter((f) => f.name.toLowerCase().includes(q));
+  }
+
+  const isEmpty = starredFolders.length === 0 && starredFiles.length === 0;
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-extrabold text-[#F5F7FA] tracking-tight">Starred Files</h1>
-        <p className="text-xs text-[#6B7280] font-medium mt-0.5">
-          Quick access to your bookmarked files and favorite documents
-        </p>
+    <div className="space-y-4 max-w-7xl mx-auto">
+      {/* Top Header */}
+      <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="flex items-center gap-2">
+          <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+          <h1 className="text-xl font-bold text-gray-900 tracking-tight">Starred</h1>
+        </div>
+
+        {/* View Toggle */}
+        <div className="flex items-center bg-gray-50 border border-gray-200 rounded-lg p-0.5">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`p-1.5 rounded-md transition-colors ${
+              viewMode === 'grid'
+                ? 'bg-white text-gray-900 shadow-xs font-semibold'
+                : 'text-gray-400 hover:text-gray-700'
+            }`}
+            title="Grid view"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={`p-1.5 rounded-md transition-colors ${
+              viewMode === 'list'
+                ? 'bg-white text-gray-900 shadow-xs font-semibold'
+                : 'text-gray-400 hover:text-gray-700'
+            }`}
+            title="List view"
+          >
+            <List className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      <div className="bg-[#151821] border border-[#252936] rounded-2xl p-5 shadow-lg">
-        {isLoading ? (
-          <div className="py-8 text-center text-xs text-[#6B7280]">Loading starred items...</div>
-        ) : starredFiles.length > 0 ? (
-          <div className="space-y-1">
-            {starredFiles.map((file) => (
-              <FileRow
-                key={file.id}
-                file={file}
-                onPreview={onPreview}
-                onDownload={onDownload}
-                onShare={onShare}
-                onRename={onRename}
-                onMove={onMove}
-                onStar={(f) => unstarMutation.mutate(f)}
-                onDelete={onDelete}
-              />
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            type="starred"
-            title="No Starred Files"
-            description="Star important files to quickly access them whenever you need."
-          />
-        )}
-      </div>
+      {/* Main View */}
+      {isEmpty ? (
+        <EmptyState
+          type="starred"
+          message={
+            searchQuery
+              ? `No starred items found matching "${searchQuery}".`
+              : 'Add stars to files and folders to easily find them later.'
+          }
+        />
+      ) : viewMode === 'grid' ? (
+        <FileGrid folders={starredFolders} files={starredFiles} />
+      ) : (
+        <FileList folders={starredFolders} files={starredFiles} />
+      )}
     </div>
   );
 };

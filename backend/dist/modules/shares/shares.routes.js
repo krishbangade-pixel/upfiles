@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const shares_controller_js_1 = require("./shares.controller.js");
+const auth_js_1 = require("../../middleware/auth.js");
+const validate_js_1 = require("../../middleware/validate.js");
+const router = (0, express_1.Router)();
+router.use(auth_js_1.authenticate);
+router.post('/', (0, validate_js_1.validate)({ body: shares_controller_js_1.createShareSchema }), shares_controller_js_1.createShare);
+router.get('/:resourceType/:resourceId', shares_controller_js_1.getShares);
+router.delete('/:id', shares_controller_js_1.removeShare);
+exports.default = router;

@@ -1,255 +1,153 @@
 import React, { useState } from 'react';
-import { User, HardDrive, Shield, Bell, Palette, Check, Save } from 'lucide-react';
-import { useToast } from '../context/ToastContext';
+import { useDrive } from '../context/DriveContext';
+import { User, HardDrive, Bell, Moon, Sun, Shield, Check } from 'lucide-react';
 
-export const SettingsPage = () => {
-  const { addToast } = useToast();
-  const [activeTab, setActiveTab] = useState('profile');
+export const Settings = () => {
+  const { user, storageInfo, addToast } = useDrive();
+  const [name, setName] = useState(user.name);
+  const [notifications, setNotifications] = useState(true);
+  const [theme, setTheme] = useState('light');
 
-  // Profile Form state
-  const [name, setName] = useState('Alex Vance');
-  const [email, setEmail] = useState('alex.vance@cloudvault.io');
-
-  // Security Toggles state
-  const [twoFactor, setTwoFactor] = useState(true);
-
-  // Notification Toggles state
-  const [emailNotifs, setEmailNotifs] = useState(true);
-  const [shareNotifs, setShareNotifs] = useState(true);
-  const [uploadNotifs, setUploadNotifs] = useState(false);
-
-  const tabs = [
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'storage', label: 'Storage', icon: HardDrive },
-    { id: 'security', label: 'Security', icon: Shield },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'appearance', label: 'Appearance', icon: Palette },
-  ];
-
-  const handleSave = (e) => {
+  const handleSaveProfile = (e) => {
     e.preventDefault();
-    addToast('Settings updated successfully', 'success');
+    addToast('Profile settings saved');
   };
 
   return (
-    <div className="space-y-6 max-w-5xl animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-extrabold text-[#F5F7FA] tracking-tight">Account Settings</h1>
-        <p className="text-xs text-[#6B7280] font-medium mt-0.5">
-          Manage your profile, storage subscription, security, and preferences
-        </p>
+    <div className="space-y-6 max-w-4xl mx-auto">
+      {/* Top Header */}
+      <div className="border-b border-gray-100 pb-3">
+        <h1 className="text-xl font-bold text-gray-900 tracking-tight">Settings</h1>
+        <p className="text-xs text-gray-500 mt-1">Manage your CloudDrive account preferences</p>
       </div>
 
-      {/* Tabs Navigation */}
-      <div className="flex items-center gap-2 border-b border-[#252936] pb-1 overflow-x-auto">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all shrink-0 ${
-                isActive
-                  ? 'bg-[#7C5CFF]/15 text-[#7C5CFF] border border-[#7C5CFF]/30 font-bold'
-                  : 'text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#151821]'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      <div className="space-y-6 text-xs">
+        {/* Profile Card */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
+          <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 border-b border-gray-100 pb-3">
+            <User className="w-4 h-4 text-gray-500" />
+            <span>Profile Information</span>
+          </div>
 
-      {/* Tab Panels */}
-      <div className="bg-[#151821] border border-[#252936] rounded-2xl p-6 shadow-lg">
-        {/* Profile Tab */}
-        {activeTab === 'profile' && (
-          <form onSubmit={handleSave} className="space-y-6 max-w-xl">
-            <h3 className="text-base font-bold text-[#F5F7FA]">Personal Information</h3>
-
-            <div className="flex items-center gap-5">
-              <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
-                alt="Alex Vance"
-                className="w-16 h-16 rounded-full object-cover border-2 border-[#7C5CFF]"
-              />
+          <form onSubmit={handleSaveProfile} className="space-y-4 max-w-md">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-zinc-900 text-white font-bold text-base flex items-center justify-center">
+                {user.initials}
+              </div>
               <div>
-                <button
-                  type="button"
-                  onClick={() => addToast('Avatar upload simulated', 'info')}
-                  className="px-3.5 py-2 rounded-xl bg-[#191C25] border border-[#252936] text-xs font-semibold text-[#F5F7FA] hover:border-[#7C5CFF]/40 transition-colors"
-                >
-                  Change Avatar
-                </button>
-                <p className="text-[11px] text-[#6B7280] mt-1">JPG, PNG or GIF, max 5 MB</p>
+                <p className="font-semibold text-gray-900 text-sm">{user.name}</p>
+                <p className="text-gray-500">{user.email}</p>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#9CA3AF] mb-1.5 uppercase tracking-wider">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#11141B] border border-[#252936] text-sm text-[#F5F7FA] focus:outline-none focus:border-[#7C5CFF]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#9CA3AF] mb-1.5 uppercase tracking-wider">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#11141B] border border-[#252936] text-sm text-[#F5F7FA] focus:outline-none focus:border-[#7C5CFF]"
-                />
-              </div>
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">Display Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900"
+              />
             </div>
 
             <button
               type="submit"
-              className="px-5 py-2.5 bg-[#7C5CFF] hover:bg-[#6D4FF5] text-white text-xs font-bold rounded-xl shadow-lg shadow-[#7C5CFF]/20 flex items-center gap-2"
+              className="px-4 py-2 bg-zinc-900 text-white font-medium rounded-lg hover:bg-zinc-800 transition-colors"
             >
-              <Save className="w-4 h-4" /> Save Profile
+              Save Profile
             </button>
           </form>
-        )}
+        </div>
 
-        {/* Storage Tab */}
-        {activeTab === 'storage' && (
-          <div className="space-y-6 max-w-xl">
-            <h3 className="text-base font-bold text-[#F5F7FA]">Storage & Subscription</h3>
+        {/* Storage Breakdown Card */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
+          <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 border-b border-gray-100 pb-3">
+            <HardDrive className="w-4 h-4 text-gray-500" />
+            <span>Storage Usage</span>
+          </div>
 
-            <div className="p-5 rounded-2xl bg-[#11141B] border border-[#252936] space-y-4">
-              <div className="flex justify-between text-xs font-bold text-[#F5F7FA]">
-                <span>Cloud Vault Enterprise</span>
-                <span className="text-[#7C5CFF]">130 GB / 150 GB</span>
-              </div>
-
-              <div className="w-full h-2.5 bg-[#191C25] rounded-full overflow-hidden">
-                <div className="h-full bg-[#7C5CFF] w-[85%]" />
-              </div>
-
-              <p className="text-xs text-[#6B7280]">
-                Your plan renews automatically on <strong className="text-[#F5F7FA]">October 1, 2026</strong>.
-              </p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between font-medium">
+              <span>{storageInfo.usedGB} GB used</span>
+              <span className="text-gray-500">15.0 GB total</span>
             </div>
 
-            <div className="p-5 rounded-2xl bg-gradient-to-tr from-[#7C5CFF]/20 to-[#4F8EF7]/20 border border-[#7C5CFF]/40 flex items-center justify-between">
-              <div>
-                <h4 className="text-sm font-bold text-[#F5F7FA]">Upgrade to 1 TB Ultra Plan</h4>
-                <p className="text-xs text-[#9CA3AF]">Unlimited file sharing and priority 24/7 cloud sync</p>
+            <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden flex">
+              <div className="bg-blue-500 h-[100%]" style={{ width: '45%' }} title="Documents: 45MB" />
+              <div className="bg-purple-500 h-[100%]" style={{ width: '30%' }} title="Images: 30MB" />
+              <div className="bg-indigo-500 h-[100%]" style={{ width: '15%' }} title="Videos: 15MB" />
+              <div className="bg-amber-500 h-[100%]" style={{ width: '10%' }} title="Others: 10MB" />
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+              <div className="flex items-center gap-2 text-gray-600">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                <span>Documents</span>
               </div>
-              <button
-                onClick={() => addToast('Upgrade request received!', 'success')}
-                className="px-4 py-2 bg-[#7C5CFF] hover:bg-[#6D4FF5] text-white text-xs font-bold rounded-xl shadow-md shrink-0"
-              >
-                Upgrade Now
-              </button>
+              <div className="flex items-center gap-2 text-gray-600">
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+                <span>Images</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600">
+                <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                <span>Videos</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                <span>Others</span>
+              </div>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Security Tab */}
-        {activeTab === 'security' && (
-          <div className="space-y-6 max-w-xl">
-            <h3 className="text-base font-bold text-[#F5F7FA]">Security Settings</h3>
-
-            <div className="flex items-center justify-between p-4 rounded-xl bg-[#11141B] border border-[#252936]">
+        {/* Notifications & Appearance */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 border-b border-gray-100 pb-2">
+              <Bell className="w-4 h-4 text-gray-500" />
+              <span>Notifications</span>
+            </div>
+            <div className="flex items-center justify-between py-1">
               <div>
-                <h4 className="text-xs font-bold text-[#F5F7FA]">Two-Factor Authentication (2FA)</h4>
-                <p className="text-[11px] text-[#6B7280]">Secure your account with authenticator codes</p>
+                <p className="font-medium text-gray-900">Email Notifications</p>
+                <p className="text-gray-500 text-[11px]">Receive updates about shared files</p>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setTwoFactor(!twoFactor);
-                  addToast(twoFactor ? '2FA disabled' : '2FA enabled', 'info');
+              <input
+                type="checkbox"
+                checked={notifications}
+                onChange={(e) => {
+                  setNotifications(e.target.checked);
+                  addToast(`Notifications ${e.target.checked ? 'enabled' : 'disabled'}`);
                 }}
-                className={`w-12 h-6 rounded-full p-1 transition-colors ${
-                  twoFactor ? 'bg-[#7C5CFF]' : 'bg-[#252936]'
-                }`}
-              >
-                <div
-                  className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                    twoFactor ? 'translate-x-6' : 'translate-x-0'
-                  }`}
-                />
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              <h4 className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Active Sessions</h4>
-              <div className="p-3.5 rounded-xl bg-[#11141B] border border-[#252936] flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-bold text-[#F5F7FA]">Chrome on Windows 11 (Current)</p>
-                  <p className="text-[11px] text-[#6B7280]">Mumbai, India • Active now</p>
-                </div>
-                <span className="text-[11px] font-semibold text-[#22C55E]">Online</span>
-              </div>
+                className="w-4 h-4 rounded text-zinc-900 focus:ring-zinc-900 cursor-pointer"
+              />
             </div>
           </div>
-        )}
 
-        {/* Notifications Tab */}
-        {activeTab === 'notifications' && (
-          <div className="space-y-4 max-w-xl">
-            <h3 className="text-base font-bold text-[#F5F7FA]">Notification Preferences</h3>
-
-            {[
-              { title: 'Email Digest', desc: 'Receive weekly activity summaries', state: emailNotifs, setState: setEmailNotifs },
-              { title: 'Shared File Alerts', desc: 'Notify when team members share files with you', state: shareNotifs, setState: setShareNotifs },
-              { title: 'Upload Confirmations', desc: 'Pop up toast when file uploads complete', state: uploadNotifs, setState: setUploadNotifs },
-            ].map((n, idx) => (
-              <div key={idx} className="flex items-center justify-between p-4 rounded-xl bg-[#11141B] border border-[#252936]">
-                <div>
-                  <h4 className="text-xs font-bold text-[#F5F7FA]">{n.title}</h4>
-                  <p className="text-[11px] text-[#6B7280]">{n.desc}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    n.setState(!n.state);
-                    addToast('Notification setting updated', 'info');
-                  }}
-                  className={`w-12 h-6 rounded-full p-1 transition-colors ${
-                    n.state ? 'bg-[#7C5CFF]' : 'bg-[#252936]'
-                  }`}
-                >
-                  <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      n.state ? 'translate-x-6' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Appearance Tab */}
-        {activeTab === 'appearance' && (
-          <div className="space-y-6 max-w-xl">
-            <h3 className="text-base font-bold text-[#F5F7FA]">Theme & Colors</h3>
-
-            <div className="p-4 rounded-xl bg-[#11141B] border border-[#252936] flex items-center justify-between">
+          <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 border-b border-gray-100 pb-2">
+              <Sun className="w-4 h-4 text-gray-500" />
+              <span>Appearance</span>
+            </div>
+            <div className="flex items-center justify-between py-1">
               <div>
-                <h4 className="text-xs font-bold text-[#F5F7FA]">Theme Mode</h4>
-                <p className="text-[11px] text-[#6B7280]">Dark SaaS Theme (Default)</p>
+                <p className="font-medium text-gray-900">Theme Preference</p>
+                <p className="text-gray-500 text-[11px]">Default Light Theme</p>
               </div>
-              <span className="px-3 py-1 rounded-lg bg-[#7C5CFF]/15 text-[#7C5CFF] text-xs font-bold border border-[#7C5CFF]/30">
-                Dark Mode Active
-              </span>
+              <select
+                value={theme}
+                onChange={(e) => {
+                  setTheme(e.target.value);
+                  addToast(`Theme set to ${e.target.value}`);
+                }}
+                className="px-2.5 py-1.5 border border-gray-300 rounded-lg text-xs bg-white focus:outline-none"
+              >
+                <option value="light">Light Theme</option>
+                <option value="dark">Dark Theme (System)</option>
+              </select>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

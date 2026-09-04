@@ -1,98 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import { FolderInput, X, Folder, HardDrive, ChevronRight } from 'lucide-react';
-import { folderService } from '../../services/folderService';
+import React, { useState } from 'react';
+import { Modal } from '../common/Modal';
+import { useDrive } from '../../context/DriveContext';
+import { Folder, HardDrive, Check } from 'lucide-react';
 
-export const MoveModal = ({ isOpen, item, onClose, onMoveConfirm }) => {
-  const [selectedFolderId, setSelectedFolderId] = useState(null); // null = My Drive root
-  const [availableFolders, setAvailableFolders] = useState([]);
+export const MoveModal = () => {
+  const { modalState, closeModal, moveItem, folders } = useDrive();
+  const [selectedFolderId, setSelectedFolderId] = useState(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      folderService.getAllFolders().then((folders) => {
-        setAvailableFolders(folders.filter((f) => f.id !== item?.id));
-      });
-    }
-  }, [isOpen, item]);
+  const isOpen = modalState?.type === 'move';
+  const item = modalState?.item;
+  const isFolder = modalState?.meta?.isFolder;
 
-  if (!isOpen || !item) return null;
+  if (!item) return null;
 
-  const handleMove = () => {
-    onMoveConfirm(item.id, selectedFolderId);
-    onClose();
+  // Filter valid candidate folders (exclude self and self-children if folder)
+  const availableFolders = folders.filter(
+    (f) => !f.isTrash && (isFolder ? f.id !== item.id : true)
+  );
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    moveItem(item, isFolder, selectedFolderId);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#151821] border border-[#252936] rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#7C5CFF]/15 border border-[#7C5CFF]/30 flex items-center justify-center">
-              <FolderInput className="w-5 h-5 text-[#7C5CFF]" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-[#F5F7FA]">Move "{item.name}"</h3>
-              <p className="text-xs text-[#6B7280]">Select a destination folder</p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 text-[#6B7280] hover:text-[#F5F7FA] hover:bg-[#191C25] rounded-xl transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <Modal isOpen={isOpen} onClose={closeModal} title={`Move "${item.name}"`}>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <label className="block text-xs font-medium text-gray-700">Select destination folder:</label>
 
-        {/* Folder Tree Selector */}
-        <div className="bg-[#11141B] border border-[#252936] rounded-xl p-3 max-h-60 overflow-y-auto space-y-1 my-4">
-          {/* Root Option */}
-          <button
+        <div className="border border-gray-200 rounded-lg max-h-56 overflow-y-auto divide-y divide-gray-100 text-xs">
+          {/* Root / My Drive */}
+          <div
             onClick={() => setSelectedFolderId(null)}
-            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-              selectedFolderId === null
-                ? 'bg-[#7C5CFF]/15 text-[#7C5CFF] border border-[#7C5CFF]/30'
-                : 'text-[#F5F7FA] hover:bg-[#191C25]'
+            className={`flex items-center justify-between p-3 cursor-pointer transition-colors ${
+              selectedFolderId === null ? 'bg-zinc-900 text-white' : 'hover:bg-gray-50 text-gray-800'
             }`}
           >
-            <HardDrive className="w-4 h-4 text-[#7C5CFF]" /> My Drive (Root)
-          </button>
+            <div className="flex items-center gap-2.5">
+              <HardDrive className="w-4 h-4" />
+              <span className="font-medium">My Drive (Root)</span>
+            </div>
+            {selectedFolderId === null && <Check className="w-4 h-4 text-white" />}
+          </div>
 
-          {/* Available folders */}
           {availableFolders.map((f) => (
-            <button
+            <div
               key={f.id}
               onClick={() => setSelectedFolderId(f.id)}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                selectedFolderId === f.id
-                  ? 'bg-[#7C5CFF]/15 text-[#7C5CFF] border border-[#7C5CFF]/30'
-                  : 'text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#191C25]'
+              className={`flex items-center justify-between p-3 cursor-pointer transition-colors ${
+                selectedFolderId === f.id ? 'bg-zinc-900 text-white' : 'hover:bg-gray-50 text-gray-800'
               }`}
             >
-              <div className="flex items-center gap-2">
-                <Folder className="w-4 h-4 text-[#4F8EF7]" />
-                <span>{f.name}</span>
+              <div className="flex items-center gap-2.5">
+                <Folder className="w-4 h-4" />
+                <span className="font-medium">{f.name}</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-[#6B7280]" />
-            </button>
+              {selectedFolderId === f.id && <Check className="w-4 h-4 text-white" />}
+            </div>
           ))}
         </div>
 
-        {/* Action buttons */}
-        <div className="flex items-center justify-end gap-3 pt-2">
+        <div className="flex items-center justify-end gap-2 pt-2">
           <button
             type="button"
-            onClick={onClose}
-            className="px-4 py-2 text-xs font-semibold text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#191C25] rounded-xl border border-[#252936]"
+            onClick={closeModal}
+            className="px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
           >
             Cancel
           </button>
           <button
-            onClick={handleMove}
-            className="px-5 py-2 text-xs font-bold text-white bg-[#7C5CFF] hover:bg-[#6D4FF5] rounded-xl shadow-lg shadow-[#7C5CFF]/25"
+            type="submit"
+            className="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition-colors"
           >
-            Move Here
+            Move here
           </button>
         </div>
-      </div>
-    </div>
+      </form>
+    </Modal>
   );
 };

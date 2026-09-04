@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const files_controller_js_1 = require("./files.controller.js");
+const auth_js_1 = require("../../middleware/auth.js");
+const validate_js_1 = require("../../middleware/validate.js");
+const router = (0, express_1.Router)();
+router.use(auth_js_1.authenticate);
+router.post('/init', (0, validate_js_1.validate)({ body: files_controller_js_1.initUploadSchema }), files_controller_js_1.initUpload);
+router.post('/complete', (0, validate_js_1.validate)({ body: files_controller_js_1.completeUploadSchema }), files_controller_js_1.completeUpload);
+router.get('/', files_controller_js_1.listAllFiles);
+router.get('/:id', files_controller_js_1.getFile);
+router.get('/:id/download', files_controller_js_1.downloadFile);
+router.patch('/:id', (0, validate_js_1.validate)({ body: files_controller_js_1.updateFileSchema }), files_controller_js_1.updateFile);
+router.delete('/:id', files_controller_js_1.deleteFile);
+exports.default = router;

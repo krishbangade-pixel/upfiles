@@ -1,137 +1,257 @@
-import { MOCK_FILES, MOCK_TRASH } from '../data/mockData';
-import { getStoredItem, setStoredItem, STORAGE_KEYS } from '../utils/storage';
+import { api } from '../lib/api';
+import { supabase } from '../lib/supabase';
+
+const BUCKET_NAME = 'clouddrive';
+
+const normalizeId = (id) => (!id || id === 'null' || id === 'undefined' ? null : id);
+
+const getMimeFromExtension = (ext) => {
+  const map = {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    gif: 'image/gif',
+    svg: 'image/svg+xml',
+    webp: 'image/webp',
+    mp4: 'video/mp4',
+    webm: 'video/webm',
+    ogv: 'video/ogg',
+    mov: 'video/quicktime',
+    avi: 'video/x-msvideo',
+    mp3: 'audio/mpeg',
+    wav: 'audio/wav',
+    pdf: 'application/pdf',
+    doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xls: 'application/vnd.ms-excel',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ppt: 'application/vnd.ms-powerpoint',
+    pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    txt: 'text/plain',
+    json: 'application/json',
+    zip: 'application/zip',
+  };
+  return map[ext?.toLowerCase()] || 'application/octet-stream';
+};
+
+const formatSizeBytes = (bytes) => {
+  if (!bytes || bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+};
 
 export const fileService = {
-  getFiles: async (folderId = null) => {
-    await new Promise((res) => setTimeout(res, 150));
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    if (folderId === 'all') return allFiles;
-    return allFiles.filter((f) => f.folderId === folderId);
+  getFiles: async (userId) => {
+    try {
+      const res = await api.get('/files');
+      const files = res.data || [];
+
+      return files
+        .filter((f) => !f.isTrash && !f.is_trash && !f.isDeleted && !f.is_deleted && f.status !== 'failed')
+        .map((f) => {
+          const ext = f.extension || (f.name ? f.name.split('.').pop() : '') || '';
+          const size = Number(f.size || f.size_bytes || 0);
+          const key = f.storagePath || f.storage_path || f.storage_key || `users/${userId}/files/${f.id}/original`;
+
+          return {
+            id: f.id,
+            name: f.name,
+            extension: ext,
+            mimeType: f.mimeType || f.mime_type || getMimeFromExtension(ext),
+            size,
+            formattedSize: f.formattedSize || f.formatted_size || formatSizeBytes(size),
+            type: ext || 'doc',
+            folderId: normalizeId(f.folderId !== undefined ? f.folderId : f.folder_id),
+            ownerId: f.ownerId || f.owner_id || userId,
+            owner: f.owner || 'You',
+            status: f.status || 'ready',
+            storageKey: key,
+            isStarred: !!(f.isStarred || f.is_starred),
+            isTrash: !!(f.isTrash || f.is_trash || f.isDeleted || f.is_deleted),
+            createdAt: f.createdAt || f.created_at || new Date().toISOString(),
+            updatedAt: f.updatedAt || f.updated_at || new Date().toISOString(),
+          };
+        });
+    } catch (err) {
+      console.error('fileService.getFiles failed:', err);
+      return [];
+    }
   },
 
-  getAllFiles: async () => {
-    await new Promise((res) => setTimeout(res, 100));
-    return getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-  },
+  uploadFile: async (fileItem, folderId, userId, onProgress) => {
+    if (!fileItem) throw new Error('Missing file object');
 
-  getRecentFiles: async (limit = 10) => {
-    await new Promise((res) => setTimeout(res, 150));
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    return [...allFiles]
-      .sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime())
-      .slice(0, limit);
-  },
+    const fileObj = fileItem.rawFile || fileItem;
+    const fileName = fileItem.name || fileObj.name || 'unnamed';
+    const sizeBytes = fileItem.size || fileObj.size || 0;
+    const ext = fileName.split('.').pop().toLowerCase();
+    const mimeType = fileObj.type || fileItem.type || getMimeFromExtension(ext);
 
-  getStarredFiles: async () => {
-    await new Promise((res) => setTimeout(res, 150));
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    return allFiles.filter((f) => f.starred);
-  },
+    if (onProgress) onProgress(15);
 
-  getSharedFiles: async () => {
-    await new Promise((res) => setTimeout(res, 150));
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    return allFiles.filter((f) => f.sharedWithMe);
-  },
+    // Step 1: Initialize upload record on Express API
+    const initRes = await api.post('/files/init', {
+      name: fileName,
+      mimeType,
+      sizeBytes,
+      folderId: folderId || null,
+    });
 
-  getTrashItems: async () => {
-    await new Promise((res) => setTimeout(res, 150));
-    return getStoredItem('cloudvault_trash', MOCK_TRASH);
-  },
+    const { fileId, storagePath, bucket } = initRes.data;
 
-  uploadFile: async ({ file, folderId = null }) => {
-    await new Promise((res) => setTimeout(res, 300));
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    const ext = file.name.split('.').pop()?.toLowerCase() || 'dat';
+    if (onProgress) onProgress(40);
 
-    const newFile = {
-      id: `file-${Date.now()}`,
-      name: file.name,
-      folderId,
-      size: file.size || Math.floor(Math.random() * 15000000) + 500000,
-      type: file.type || 'application/octet-stream',
-      extension: ext,
-      lastModified: new Date().toISOString(),
-      members: [],
-      starred: false,
-      sharedWithMe: false,
-      owner: { name: 'You', email: 'you@cloudvault.io' },
-      url: file.url || 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&q=80&w=1000',
+    // Step 2: Upload raw file binary to Supabase Storage bucket at storagePath
+    const targetBucket = bucket || BUCKET_NAME;
+    const { error: uploadErr } = await supabase.storage
+      .from(targetBucket)
+      .upload(storagePath, fileObj, {
+        cacheControl: '3600',
+        upsert: true,
+      });
+
+    if (uploadErr) {
+      console.error('[Storage Upload Error]', uploadErr);
+      throw new Error(`Storage upload failed: ${uploadErr.message}`);
+    }
+
+    if (onProgress) onProgress(75);
+
+    // Step 3: Complete upload on Express API
+    const completeRes = await api.post('/files/complete', { fileId });
+
+    if (onProgress) onProgress(100);
+
+    const f = completeRes.data;
+    return {
+      id: f.id,
+      name: f.name,
+      extension: f.extension || ext,
+      mimeType: f.mimeType || mimeType,
+      size: f.size || sizeBytes,
+      formattedSize: f.formattedSize || formatSizeBytes(sizeBytes),
+      type: f.extension || ext,
+      folderId: normalizeId(f.folderId),
+      ownerId: userId,
+      owner: 'You',
+      status: 'ready',
+      storageKey: storagePath,
+      isStarred: false,
+      isTrash: false,
+      createdAt: f.createdAt || new Date().toISOString(),
+      updatedAt: f.updatedAt || new Date().toISOString(),
     };
-
-    const updated = [newFile, ...allFiles];
-    setStoredItem(STORAGE_KEYS.FILES, updated);
-    return newFile;
   },
 
-  renameFile: async (id, newName) => {
-    await new Promise((res) => setTimeout(res, 150));
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    const updated = allFiles.map((f) => (f.id === id ? { ...f, name: newName } : f));
-    setStoredItem(STORAGE_KEYS.FILES, updated);
-    return updated.find((f) => f.id === id);
+  getSignedPreviewUrl: async (storageKeyOrFileId) => {
+    if (!storageKeyOrFileId) return null;
+    try {
+      // If UUID fileId or storage key, call API download endpoint
+      let fileId = storageKeyOrFileId;
+      if (storageKeyOrFileId.includes('/')) {
+        const parts = storageKeyOrFileId.split('/');
+        const fileIdx = parts.indexOf('files');
+        if (fileIdx !== -1 && parts[fileIdx + 1]) {
+          fileId = parts[fileIdx + 1];
+        }
+      }
+      const res = await api.get(`/files/${fileId}/download`);
+      return res.data?.url || null;
+    } catch (err) {
+      console.warn('fileService.getSignedPreviewUrl fallback to storage:', err.message);
+      try {
+        const { data } = await supabase.storage.from(BUCKET_NAME).createSignedUrl(storageKeyOrFileId, 3600);
+        return data?.signedUrl || null;
+      } catch (e) {
+        return null;
+      }
+    }
   },
 
-  moveFile: async (id, targetFolderId) => {
-    await new Promise((res) => setTimeout(res, 150));
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    const updated = allFiles.map((f) => (f.id === id ? { ...f, folderId: targetFolderId } : f));
-    setStoredItem(STORAGE_KEYS.FILES, updated);
-    return updated.find((f) => f.id === id);
+  getSignedDownloadUrl: async (storageKeyOrFileId) => {
+    if (!storageKeyOrFileId) return null;
+    try {
+      let fileId = storageKeyOrFileId;
+      if (storageKeyOrFileId.includes('/')) {
+        const parts = storageKeyOrFileId.split('/');
+        const fileIdx = parts.indexOf('files');
+        if (fileIdx !== -1 && parts[fileIdx + 1]) {
+          fileId = parts[fileIdx + 1];
+        }
+      }
+      const res = await api.get(`/files/${fileId}/download`);
+      return res.data?.url || null;
+    } catch (err) {
+      console.warn('fileService.getSignedDownloadUrl fallback to storage:', err.message);
+      try {
+        const { data } = await supabase.storage.from(BUCKET_NAME).createSignedUrl(storageKeyOrFileId, 300, { download: true });
+        return data?.signedUrl || null;
+      } catch (e) {
+        return null;
+      }
+    }
   },
 
-  toggleStarFile: async (id) => {
-    await new Promise((res) => setTimeout(res, 100));
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    const updated = allFiles.map((f) => (f.id === id ? { ...f, starred: !f.starred } : f));
-    setStoredItem(STORAGE_KEYS.FILES, updated);
-    return updated.find((f) => f.id === id);
+  renameFile: async (fileId, newName) => {
+    try {
+      const res = await api.patch(`/files/${fileId}`, { name: newName.trim() });
+      return res.data;
+    } catch (err) {
+      console.error('fileService.renameFile failed:', err.message);
+      throw err;
+    }
   },
 
-  deleteFile: async (id) => {
-    await new Promise((res) => setTimeout(res, 200));
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    const targetFile = allFiles.find((f) => f.id === id);
-    if (!targetFile) return null;
-
-    const remainingFiles = allFiles.filter((f) => f.id !== id);
-    setStoredItem(STORAGE_KEYS.FILES, remainingFiles);
-
-    // Add to trash
-    const trash = getStoredItem('cloudvault_trash', MOCK_TRASH);
-    const trashItem = {
-      id: `trash-${Date.now()}`,
-      name: targetFile.name,
-      type: 'file',
-      size: targetFile.size,
-      deletedAt: new Date().toISOString(),
-      originalLocation: 'My Drive',
-      item: targetFile,
-    };
-    setStoredItem('cloudvault_trash', [trashItem, ...trash]);
-    return targetFile;
+  moveFile: async (fileId, targetFolderId) => {
+    try {
+      const res = await api.patch(`/files/${fileId}`, { folderId: targetFolderId || null });
+      return res.data;
+    } catch (err) {
+      console.error('fileService.moveFile failed:', err.message);
+      throw err;
+    }
   },
 
-  restoreFileFromTrash: async (trashId) => {
-    await new Promise((res) => setTimeout(res, 200));
-    const trash = getStoredItem('cloudvault_trash', MOCK_TRASH);
-    const targetTrashItem = trash.find((t) => t.id === trashId);
-    if (!targetTrashItem) return null;
-
-    const updatedTrash = trash.filter((t) => t.id !== trashId);
-    setStoredItem('cloudvault_trash', updatedTrash);
-
-    // Restore to files
-    const allFiles = getStoredItem(STORAGE_KEYS.FILES, MOCK_FILES);
-    setStoredItem(STORAGE_KEYS.FILES, [targetTrashItem.item, ...allFiles]);
-    return targetTrashItem.item;
+  toggleStar: async (fileId, currentState) => {
+    try {
+      const res = await api.patch(`/files/${fileId}`, { isStarred: !currentState });
+      return res.data;
+    } catch (err) {
+      console.error('fileService.toggleStar failed:', err.message);
+      throw err;
+    }
   },
 
-  permanentDeleteFromTrash: async (trashId) => {
-    await new Promise((res) => setTimeout(res, 150));
-    const trash = getStoredItem('cloudvault_trash', MOCK_TRASH);
-    const updated = trash.filter((t) => t.id !== trashId);
-    setStoredItem('cloudvault_trash', updated);
-    return true;
-  }
+  deleteFile: async (fileId) => {
+    try {
+      const res = await api.delete(`/files/${fileId}`);
+      return res.data;
+    } catch (err) {
+      console.error('fileService.deleteFile failed:', err.message);
+      throw err;
+    }
+  },
+
+  restoreFile: async (fileId) => {
+    try {
+      const res = await api.patch(`/files/${fileId}`, { isTrash: false });
+      return res.data;
+    } catch (err) {
+      console.error('fileService.restoreFile failed:', err.message);
+      throw err;
+    }
+  },
+
+  deletePermanently: async (fileId) => {
+    try {
+      await api.delete(`/trash/files/${fileId}`);
+      return true;
+    } catch (err) {
+      console.error('fileService.deletePermanently failed:', err.message);
+      throw err;
+    }
+  },
 };
+

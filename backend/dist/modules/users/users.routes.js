@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const users_controller_js_1 = require("./users.controller.js");
+const auth_js_1 = require("../../middleware/auth.js");
+const validate_js_1 = require("../../middleware/validate.js");
+const router = (0, express_1.Router)();
+router.use(auth_js_1.authenticate);
+router.get('/me', users_controller_js_1.getUserProfile);
+router.patch('/me', (0, validate_js_1.validate)({ body: users_controller_js_1.updateProfileSchema }), users_controller_js_1.updateUserProfile);
+exports.default = router;

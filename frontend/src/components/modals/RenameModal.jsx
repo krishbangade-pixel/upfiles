@@ -1,75 +1,62 @@
-import React, { useState } from 'react';
-import { Edit2, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Modal } from '../common/Modal';
+import { useDrive } from '../../context/DriveContext';
 
-export const RenameModal = ({ isOpen, item, onClose, onRenameConfirm }) => {
-  const [newName, setNewName] = useState(item?.name || '');
-  const [error, setError] = useState('');
+export const RenameModal = () => {
+  const { modalState, closeModal, renameItem } = useDrive();
+  const [name, setName] = useState('');
 
-  if (!isOpen || !item) return null;
+  const isOpen = modalState?.type === 'rename';
+  const item = modalState?.item;
+  const isFolder = modalState?.meta?.isFolder;
+
+  useEffect(() => {
+    if (item) {
+      setName(item.name);
+    }
+  }, [item]);
+
+  if (!item) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!newName.trim()) {
-      setError('Name cannot be empty');
-      return;
+    if (name.trim()) {
+      renameItem(item, isFolder, name.trim());
     }
-    onRenameConfirm(item.id, newName.trim());
-    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#151821] border border-[#252936] rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#7C5CFF]/15 border border-[#7C5CFF]/30 flex items-center justify-center">
-              <Edit2 className="w-5 h-5 text-[#7C5CFF]" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-[#F5F7FA]">Rename Item</h3>
-              <p className="text-xs text-[#6B7280]">Enter a new name for "{item.name}"</p>
-            </div>
-          </div>
+    <Modal isOpen={isOpen} onClose={closeModal} title={`Rename ${isFolder ? 'Folder' : 'File'}`}>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">
+            Name
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            autoFocus
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 transition-all"
+          />
+        </div>
+        <div className="flex items-center justify-end gap-2 pt-2">
           <button
-            onClick={onClose}
-            className="p-1.5 text-[#6B7280] hover:text-[#F5F7FA] hover:bg-[#191C25] rounded-xl transition-colors"
+            type="button"
+            onClick={closeModal}
+            className="px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X className="w-5 h-5" />
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={!name.trim() || name === item.name}
+            className="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+          >
+            Save
           </button>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input
-              type="text"
-              autoFocus
-              value={newName}
-              onChange={(e) => {
-                setNewName(e.target.value);
-                if (error) setError('');
-              }}
-              className="w-full px-4 py-2.5 rounded-xl bg-[#11141B] border border-[#252936] text-sm text-[#F5F7FA] focus:outline-none focus:border-[#7C5CFF]"
-            />
-            {error && <p className="text-xs text-[#EF4444] font-medium mt-1">{error}</p>}
-          </div>
-
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-[#9CA3AF] hover:text-[#F5F7FA] hover:bg-[#191C25] rounded-xl border border-[#252936]"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 text-xs font-bold text-white bg-[#7C5CFF] hover:bg-[#6D4FF5] rounded-xl shadow-lg shadow-[#7C5CFF]/25"
-            >
-              Save Rename
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+      </form>
+    </Modal>
   );
 };
