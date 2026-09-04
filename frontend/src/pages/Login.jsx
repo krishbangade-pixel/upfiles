@@ -93,8 +93,8 @@ export const Login = () => {
   };
 
   const fillDemo = () => {
-    setEmail('krish@example.com');
-    setPassword('cloud123456');
+    setEmail('krishbangade@gmail.com');
+    setPassword('password123');
     setErrorMsg('');
   };
 
