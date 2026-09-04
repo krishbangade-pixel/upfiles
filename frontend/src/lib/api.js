@@ -1,6 +1,8 @@
 import { supabase } from './supabase';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+let rawBase = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+rawBase = rawBase.replace(/\/+$/, '');
+const API_BASE_URL = rawBase.endsWith('/api') ? rawBase : `${rawBase}/api`;
 
 async function getAuthToken(forceRefresh = false) {
   try {
