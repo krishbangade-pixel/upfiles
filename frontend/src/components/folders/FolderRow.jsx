@@ -54,17 +54,17 @@ export const FolderRow = ({ folder, isTrash = false }) => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onClick={() => !isTrash && setCurrentFolderId(folder.id)}
-      className={`border-b border-gray-100 hover:bg-gray-50/80 transition-colors cursor-pointer text-xs ${
-        isDragOver ? 'bg-indigo-50 border-indigo-200' : ''
+      className={`border-b border-[#63655d] hover:bg-[#51534d] transition-colors cursor-pointer text-xs ${
+        isDragOver ? 'bg-[#3b3d37] border-[#316d7a]' : ''
       }`}
     >
-      <td className="py-3 px-4 flex items-center gap-3 font-medium text-gray-900 truncate max-w-xs">
-        <Folder className="w-4 h-4 text-gray-600 fill-gray-100 flex-shrink-0" />
+      <td className="py-3 px-4 flex items-center gap-3 font-medium text-white truncate max-w-xs">
+        <Folder className="w-4 h-4 text-[#316d7a] fill-[#316d7a]/20 flex-shrink-0" />
         <span className="truncate">{folder.name}</span>
       </td>
-      <td className="py-3 px-4 text-gray-500 whitespace-nowrap">{folder.owner || 'You'}</td>
-      <td className="py-3 px-4 text-gray-500 whitespace-nowrap">{formatDate(folder.updatedAt)}</td>
-      <td className="py-3 px-4 text-gray-500 whitespace-nowrap">--</td>
+      <td className="py-3 px-4 text-gray-200 whitespace-nowrap">{folder.owner || 'You'}</td>
+      <td className="py-3 px-4 text-gray-200 whitespace-nowrap">{formatDate(folder.updatedAt)}</td>
+      <td className="py-3 px-4 text-gray-200 whitespace-nowrap">--</td>
       <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
         <FolderActionMenu folder={folder} isTrash={isTrash} />
       </td>

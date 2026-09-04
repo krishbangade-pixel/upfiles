@@ -242,20 +242,20 @@ export const Shared = () => {
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
       {/* Top Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+      <div className="flex items-center justify-between border-b border-[#63655d] pb-3">
         <div className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-zinc-900" />
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">Shared with me</h1>
+          <Users className="w-5 h-5 text-[#316d7a]" />
+          <h1 className="text-xl font-bold text-white tracking-tight">Shared with me</h1>
         </div>
 
         {/* View Toggle */}
-        <div className="flex items-center bg-gray-50 border border-gray-200 rounded-lg p-0.5">
+        <div className="flex items-center bg-[#444640] border border-[#63655d] rounded-xl p-0.5">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-1.5 rounded-md transition-colors ${
+            className={`p-1.5 rounded-lg transition-colors ${
               viewMode === 'grid'
-                ? 'bg-white text-gray-900 shadow-xs font-semibold'
-                : 'text-gray-400 hover:text-gray-700'
+                ? 'bg-[#316d7a] text-white shadow-xs font-semibold'
+                : 'text-gray-300 hover:text-white'
             }`}
             title="Grid view"
           >
@@ -265,8 +265,8 @@ export const Shared = () => {
             onClick={() => setViewMode('list')}
             className={`p-1.5 rounded-md transition-colors ${
               viewMode === 'list'
-                ? 'bg-white text-gray-900 shadow-xs font-semibold'
-                : 'text-gray-400 hover:text-gray-700'
+                ? 'bg-[#316d7a] text-white shadow-xs font-semibold'
+                : 'text-gray-300 hover:text-white'
             }`}
             title="List view"
           >

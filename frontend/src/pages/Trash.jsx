@@ -22,30 +22,30 @@ export const Trash = () => {
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
       {/* Top Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+      <div className="flex items-center justify-between border-b border-[#63655d] pb-3">
         <div className="flex items-center gap-2">
-          <Trash2 className="w-5 h-5 text-gray-700" />
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">Trash</h1>
+          <Trash2 className="w-5 h-5 text-[#316d7a]" />
+          <h1 className="text-xl font-bold text-white tracking-tight">Trash</h1>
         </div>
 
         <div className="flex items-center gap-3">
           {!isEmpty && (
             <button
               onClick={emptyTrash}
-              className="px-3 py-1.5 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
+              className="px-3 py-1.5 text-xs font-medium text-rose-300 hover:text-white hover:bg-rose-900/40 border border-rose-700/60 rounded-lg transition-colors"
             >
               Empty Trash
             </button>
           )}
 
           {/* View Toggle */}
-          <div className="flex items-center bg-gray-50 border border-gray-200 rounded-lg p-0.5">
+          <div className="flex items-center bg-[#444640] border border-[#63655d] rounded-xl p-0.5">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-md transition-colors ${
+              className={`p-1.5 rounded-lg transition-colors ${
                 viewMode === 'grid'
-                  ? 'bg-white text-gray-900 shadow-xs font-semibold'
-                  : 'text-gray-400 hover:text-gray-700'
+                  ? 'bg-[#316d7a] text-white shadow-xs font-semibold'
+                  : 'text-gray-300 hover:text-white'
               }`}
               title="Grid view"
             >
@@ -53,10 +53,10 @@ export const Trash = () => {
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-md transition-colors ${
+              className={`p-1.5 rounded-lg transition-colors ${
                 viewMode === 'list'
-                  ? 'bg-white text-gray-900 shadow-xs font-semibold'
-                  : 'text-gray-400 hover:text-gray-700'
+                  ? 'bg-[#316d7a] text-white shadow-xs font-semibold'
+                  : 'text-gray-300 hover:text-white'
               }`}
               title="List view"
             >
@@ -67,8 +67,8 @@ export const Trash = () => {
       </div>
 
       {/* Info Notice Banner */}
-      <div className="flex items-center gap-2.5 p-3 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-600">
-        <Info className="w-4 h-4 text-gray-400 flex-shrink-0" />
+      <div className="flex items-center gap-2.5 p-3 bg-[#444640] border border-[#63655d] rounded-xl text-xs text-gray-200">
+        <Info className="w-4 h-4 text-gray-300 flex-shrink-0" />
         <span>Items in Trash will be automatically deleted after 30 days.</span>
       </div>
 

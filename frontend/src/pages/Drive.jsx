@@ -69,30 +69,30 @@ export const Drive = () => {
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
       {/* Top Header Controls Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#63655d] pb-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">My Drive</h1>
+          <h1 className="text-xl font-bold text-white tracking-tight">My Drive</h1>
           <Breadcrumbs />
         </div>
 
         {/* View & Sorting Toolbar */}
         <div className="flex items-center gap-2 self-end sm:self-auto">
           {/* Sort Control */}
-          <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1 text-xs text-gray-600">
-            <span className="text-gray-400 font-medium">Sort by</span>
+          <div className="flex items-center gap-1 bg-[#444640] border border-[#63655d] rounded-xl px-2.5 py-1 text-xs text-gray-200">
+            <span className="text-gray-300 font-medium">Sort by</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-transparent font-semibold text-gray-900 focus:outline-none cursor-pointer"
+              className="bg-transparent font-semibold text-white focus:outline-none cursor-pointer"
             >
-              <option value="name">Name</option>
-              <option value="modified">Last modified</option>
-              <option value="size">Size</option>
-              <option value="type">Type</option>
+              <option value="name" className="bg-[#444640] text-white">Name</option>
+              <option value="modified" className="bg-[#444640] text-white">Last modified</option>
+              <option value="size" className="bg-[#444640] text-white">Size</option>
+              <option value="type" className="bg-[#444640] text-white">Type</option>
             </select>
             <button
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="p-1 text-gray-500 hover:text-gray-900 rounded transition-colors ml-1"
+              className="p-1 text-gray-300 hover:text-white rounded transition-colors ml-1"
               title={`Sort order: ${sortOrder.toUpperCase()}`}
             >
               <ArrowUpDown className="w-3.5 h-3.5" />
@@ -100,13 +100,13 @@ export const Drive = () => {
           </div>
 
           {/* Grid / List View Toggle */}
-          <div className="flex items-center bg-gray-50 border border-gray-200 rounded-lg p-0.5">
+          <div className="flex items-center bg-[#444640] border border-[#63655d] rounded-xl p-0.5">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-md transition-colors ${
+              className={`p-1.5 rounded-lg transition-colors ${
                 viewMode === 'grid'
-                  ? 'bg-white text-gray-900 shadow-xs font-semibold'
-                  : 'text-gray-400 hover:text-gray-700'
+                  ? 'bg-[#316d7a] text-white shadow-xs font-semibold'
+                  : 'text-gray-300 hover:text-white'
               }`}
               title="Grid view"
             >
@@ -114,10 +114,10 @@ export const Drive = () => {
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-md transition-colors ${
+              className={`p-1.5 rounded-lg transition-colors ${
                 viewMode === 'list'
-                  ? 'bg-white text-gray-900 shadow-xs font-semibold'
-                  : 'text-gray-400 hover:text-gray-700'
+                  ? 'bg-[#316d7a] text-white shadow-xs font-semibold'
+                  : 'text-gray-300 hover:text-white'
               }`}
               title="List view"
             >

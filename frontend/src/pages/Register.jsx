@@ -79,43 +79,40 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/60 text-gray-900 flex flex-col justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 selection:bg-zinc-900 selection:text-white">
-      {/* Subtle Background Accent */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] pointer-events-none opacity-40 blur-[100px] bg-gradient-to-b from-gray-200 via-gray-100 to-transparent" />
-
+    <div className="min-h-screen bg-[#51534d] text-white flex flex-col justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#316d7a] selection:text-white">
       {/* Main Container */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 space-y-6">
         
         {/* Header Branding */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-white border border-gray-200 rounded-2xl shadow-xs">
-            <Cloud className="w-6 h-6 text-zinc-900 fill-zinc-900 stroke-[1.5]" />
-            <span className="text-xl font-bold tracking-tight text-gray-900">
+          <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-[#444640] border border-[#63655d] rounded-2xl shadow-md">
+            <Cloud className="w-6 h-6 text-[#316d7a] fill-[#316d7a] stroke-[1.5]" />
+            <span className="text-xl font-bold tracking-tight text-white">
               CloudDrive
             </span>
           </div>
 
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
             Create Your Account
           </h1>
-          <p className="text-xs text-gray-500 font-medium">
+          <p className="text-xs text-gray-300 font-medium">
             Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-zinc-900 hover:underline">
+            <Link to="/login" className="font-semibold text-white underline hover:text-gray-200">
               Sign in instead
             </Link>
           </p>
         </div>
 
         {/* Card Form */}
-        <div className="bg-white py-8 px-6 sm:px-10 border border-gray-200/80 rounded-2xl sm:rounded-3xl shadow-xl shadow-gray-200/40 space-y-6">
+        <div className="bg-[#444640] py-8 px-6 sm:px-10 border border-[#63655d] rounded-2xl sm:rounded-3xl shadow-2xl space-y-6">
           
           {errorMsg && (
-            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-medium flex items-start gap-3 animate-in fade-in duration-200">
-              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+            <div className="p-3.5 bg-rose-900/40 border border-rose-700/60 rounded-xl text-xs text-rose-200 font-medium flex items-start gap-3 animate-in fade-in duration-200">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
               <div className="flex-1">{errorMsg}</div>
               <button 
                 onClick={() => setErrorMsg('')}
-                className="text-rose-500 hover:text-rose-700 transition-colors"
+                className="text-rose-300 hover:text-white transition-colors"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -123,8 +120,8 @@ export const Register = () => {
           )}
 
           {infoMsg && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-700 font-medium flex items-start gap-3 animate-in fade-in duration-200">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="p-3.5 bg-emerald-900/40 border border-emerald-700/60 rounded-xl text-xs text-emerald-200 font-medium flex items-start gap-3 animate-in fade-in duration-200">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
               <div className="flex-1">{infoMsg}</div>
             </div>
           )}
@@ -132,59 +129,59 @@ export const Register = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Full Name */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              <label className="block text-xs font-semibold text-gray-200 mb-1.5">
                 Full Name
               </label>
               <div className="relative group">
-                <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-zinc-900" />
+                <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-white" />
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Krish Bangade"
                   required
-                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-gray-50/50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
               </div>
             </div>
 
             {/* Email Field */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              <label className="block text-xs font-semibold text-gray-200 mb-1.5">
                 Email Address
               </label>
               <div className="relative group">
-                <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-zinc-900" />
+                <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-white" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   required
-                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-gray-50/50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              <label className="block text-xs font-semibold text-gray-200 mb-1.5">
                 Password
               </label>
               <div className="relative group">
-                <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-zinc-900" />
+                <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-white" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
                   required
-                  className="w-full pl-10 pr-11 py-2.5 text-xs bg-gray-50/50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-all"
+                  className="w-full pl-10 pr-11 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors p-1"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-1"
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -193,24 +190,24 @@ export const Register = () => {
 
               {/* Dynamic Password Feedback */}
               {password && (
-                <div className="mt-2 p-2.5 bg-gray-50 border border-gray-200 rounded-xl space-y-1.5 text-[11px]">
+                <div className="mt-2 p-2.5 bg-[#3b3d37] border border-[#63655d] rounded-xl space-y-1.5 text-[11px]">
                   <div className="flex items-center gap-2">
                     {hasMinLength ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
                     ) : (
-                      <div className="w-3.5 h-3.5 rounded-full border border-gray-300" />
+                      <div className="w-3.5 h-3.5 rounded-full border border-gray-400" />
                     )}
-                    <span className={hasMinLength ? 'text-gray-900 font-medium' : 'text-gray-500'}>
+                    <span className={hasMinLength ? 'text-white font-medium' : 'text-gray-300'}>
                       At least 6 characters
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     {hasNumber ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
                     ) : (
-                      <div className="w-3.5 h-3.5 rounded-full border border-gray-300" />
+                      <div className="w-3.5 h-3.5 rounded-full border border-gray-400" />
                     )}
-                    <span className={hasNumber ? 'text-gray-900 font-medium' : 'text-gray-500'}>
+                    <span className={hasNumber ? 'text-white font-medium' : 'text-gray-300'}>
                       Includes a number
                     </span>
                   </div>
@@ -220,23 +217,23 @@ export const Register = () => {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              <label className="block text-xs font-semibold text-gray-200 mb-1.5">
                 Confirm Password
               </label>
               <div className="relative group">
-                <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-zinc-900" />
+                <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-white" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter password"
                   required
-                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-gray-50/50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#3b3d37] border border-[#63655d] rounded-xl text-white placeholder-gray-400 focus:bg-[#343630] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
               </div>
 
               {confirmPassword && (
-                <p className={`text-[11px] mt-1.5 font-semibold ${passwordsMatch ? 'text-emerald-600' : 'text-rose-600'}`}>
+                <p className={`text-[11px] mt-1.5 font-semibold ${passwordsMatch ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {passwordsMatch ? '✓ Passwords match' : '✕ Passwords do not match'}
                 </p>
               )}
@@ -246,7 +243,7 @@ export const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-3 flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-xs py-3 px-4 rounded-xl shadow-xs transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
+              className="w-full mt-3 flex items-center justify-center gap-2 bg-[#316d7a] hover:bg-[#275863] text-white font-semibold text-xs py-3 px-4 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
             >
               {loading ? (
                 <>
@@ -263,8 +260,8 @@ export const Register = () => {
           </form>
 
           {/* Footer badge */}
-          <div className="pt-4 border-t border-gray-100 text-center flex items-center justify-center gap-1.5 text-[11px] text-gray-500 font-medium">
-            <ShieldCheck className="w-4 h-4 text-zinc-900" />
+          <div className="pt-4 border-t border-[#63655d] text-center flex items-center justify-center gap-1.5 text-[11px] text-gray-300 font-medium">
+            <ShieldCheck className="w-4 h-4 text-[#316d7a]" />
             <span>Encrypted & Powered by Supabase Auth</span>
           </div>
         </div>

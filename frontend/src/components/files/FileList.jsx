@@ -4,11 +4,11 @@ import { FileRow } from './FileRow';
 
 export const FileList = ({ folders = [], files = [], isTrash = false }) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-xs">
+    <div className="bg-[#444640] border border-[#63655d] rounded-xl overflow-hidden shadow-md">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50/50 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+            <tr className="border-b border-[#63655d] bg-[#3b3d37] text-[11px] font-semibold text-gray-200 uppercase tracking-wider">
               <th className="py-2.5 px-4 font-semibold">Name</th>
               <th className="py-2.5 px-4 font-semibold">Owner</th>
               <th className="py-2.5 px-4 font-semibold">Last modified</th>
