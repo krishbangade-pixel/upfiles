@@ -27,7 +27,7 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  if (!session && !authUser) {
+  if (!session && !authUser && !location.pathname.startsWith('/share/')) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
@@ -78,7 +78,7 @@ export default function App() {
             }
           />
 
-          {/* Protected Application Routes */}
+          {/* Application Dashboard Routes */}
           <Route
             path="/"
             element={
@@ -90,14 +90,12 @@ export default function App() {
             <Route index element={<Navigate to="/drive" replace />} />
             <Route path="drive" element={<Drive />} />
             <Route path="shared" element={<Shared />} />
+            <Route path="share/:token" element={<Shared />} />
             <Route path="recent" element={<Recent />} />
             <Route path="starred" element={<Starred />} />
             <Route path="trash" element={<Trash />} />
             <Route path="settings" element={<Settings />} />
           </Route>
-
-          {/* Public Share Link Route */}
-          <Route path="/share/:token" element={<PublicSharePage />} />
 
           <Route path="*" element={<Navigate to="/drive" replace />} />
         </Routes>
