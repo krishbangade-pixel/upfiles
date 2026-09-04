@@ -46,10 +46,10 @@ app.use(
         cleanOrigin.includes('localhost') ||
         cleanOrigin.includes('127.0.0.1')
       ) {
-        return callback(null, true);
+        return callback(null, origin);
       }
 
-      return callback(null, true);
+      return callback(null, origin);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

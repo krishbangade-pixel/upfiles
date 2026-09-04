@@ -5,9 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_js_1 = __importDefault(require("./app.js"));
 const env_js_1 = require("./config/env.js");
-const PORT = env_js_1.env.PORT || 8080;
-const server = app_js_1.default.listen(PORT, () => {
-    console.log(`⚡️ CloudDrive Express Server running at http://localhost:${PORT}`);
+const PORT = process.env.PORT || env_js_1.env.PORT || 8080;
+const server = app_js_1.default.listen(Number(PORT), '0.0.0.0', () => {
+    console.log(`⚡️ CloudDrive Express Server running on port ${PORT}`);
     console.log(`🔒 Connected to Supabase URL: ${env_js_1.env.SUPABASE_URL}`);
     console.log(`🌐 Allowing CORS for: ${env_js_1.env.FRONTEND_URL}`);
 });
