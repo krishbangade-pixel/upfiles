@@ -17,11 +17,63 @@ export const Shared = () => {
   const [isPasswordRequired, setIsPasswordRequired] = useState(false);
   const [password, setPassword] = useState('');
   const [verifyingPassword, setVerifyingPassword] = useState(false);
-  const [linkResolvedFiles, setLinkResolvedFiles] = useState([]);
-  const [linkResolvedFolders, setLinkResolvedFolders] = useState([]);
 
-  const resolveToken = async (providedPassword = '') => {
-    if (!token) return;
+  // Persistent shared files & folders state initialized from localStorage cache
+  const [linkResolvedFiles, setLinkResolvedFiles] = useState(() => {
+    try {
+      const cached = localStorage.getItem('clouddrive_cached_shared_files');
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const [linkResolvedFolders, setLinkResolvedFolders] = useState(() => {
+    try {
+      const cached = localStorage.getItem('clouddrive_cached_shared_folders');
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const [serverSharedFiles, setServerSharedFiles] = useState([]);
+  const [serverSharedFolders, setServerSharedFolders] = useState([]);
+
+  // Helper to save tokens & items to localStorage
+  const saveTokensAndItemsToStorage = (newToken, newFiles, newFolders) => {
+    try {
+      if (newToken) {
+        const storedTokens = JSON.parse(localStorage.getItem('clouddrive_accessed_tokens') || '[]');
+        if (!storedTokens.includes(newToken)) {
+          storedTokens.push(newToken);
+          localStorage.setItem('clouddrive_accessed_tokens', JSON.stringify(storedTokens));
+        }
+      }
+      localStorage.setItem('clouddrive_cached_shared_files', JSON.stringify(newFiles));
+      localStorage.setItem('clouddrive_cached_shared_folders', JSON.stringify(newFolders));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
+  };
+
+  // Fetch items shared with logged in user from backend /api/shares/me
+  const fetchServerUserShares = async () => {
+    if (!authUser) return;
+    try {
+      const res = await api.get('/shares/me');
+      if (res.data?.data) {
+        setServerSharedFiles(res.data.data.files || []);
+        setServerSharedFolders(res.data.data.folders || []);
+      }
+    } catch (err) {
+      console.warn('Failed to fetch user shares:', err.message);
+    }
+  };
+
+  // Resolve a single token
+  const resolveToken = async (targetToken, providedPassword = '') => {
+    if (!targetToken) return;
     setLoadingLink(true);
     setLinkError('');
 
@@ -31,7 +83,7 @@ export const Shared = () => {
         headers['X-Link-Password'] = providedPassword;
       }
 
-      const res = await api.get(`/link/${token}`, { headers });
+      const res = await api.get(`/link/${targetToken}`, { headers });
       const data = res.data;
       setIsPasswordRequired(false);
 
@@ -52,9 +104,16 @@ export const Shared = () => {
           updatedAt: data.file.updatedAt,
         };
 
-        setLinkResolvedFiles([fileObj]);
+        setLinkResolvedFiles((prev) => {
+          const updated = [fileObj, ...prev.filter((f) => f.id !== fileObj.id)];
+          saveTokensAndItemsToStorage(targetToken, updated, linkResolvedFolders);
+          return updated;
+        });
+
         addToast(`Loaded shared file "${data.file.name}"`);
-        openModal('preview', fileObj, { isFolder: false });
+        if (targetToken === token) {
+          openModal('preview', fileObj, { isFolder: false });
+        }
       } else if (data.resourceType === 'folder' && data.folder) {
         const folderObj = {
           id: data.folder.id,
@@ -90,8 +149,16 @@ export const Shared = () => {
             owner: 'Shared via Link',
           }));
 
-        setLinkResolvedFolders([folderObj, ...childFolders]);
-        setLinkResolvedFiles(childFiles);
+        setLinkResolvedFolders((prevFolders) => {
+          const updatedFolders = [folderObj, ...childFolders, ...prevFolders.filter((f) => f.id !== folderObj.id)];
+          setLinkResolvedFiles((prevFiles) => {
+            const updatedFiles = [...childFiles, ...prevFiles.filter((f) => !childFiles.some((cf) => cf.id === f.id))];
+            saveTokensAndItemsToStorage(targetToken, updatedFiles, updatedFolders);
+            return updatedFiles;
+          });
+          return updatedFolders;
+        });
+
         addToast(`Loaded shared folder "${data.folder.name}"`);
       }
     } catch (err) {
@@ -106,23 +173,34 @@ export const Shared = () => {
     }
   };
 
+  // Load stored tokens and current token on mount
   useEffect(() => {
-    if (token) {
-      resolveToken();
-    }
-  }, [token]);
+    const loadAllShared = async () => {
+      fetchServerUserShares();
+
+      const storedTokens = JSON.parse(localStorage.getItem('clouddrive_accessed_tokens') || '[]');
+      const allTokens = token ? Array.from(new Set([token, ...storedTokens])) : storedTokens;
+
+      for (const t of allTokens) {
+        await resolveToken(t);
+      }
+    };
+
+    loadAllShared();
+  }, [token, authUser]);
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    if (!password) return;
+    if (!password || !token) return;
     setVerifyingPassword(true);
-    await resolveToken(password);
+    await resolveToken(token, password);
     setVerifyingPassword(false);
   };
 
   // Filter folders & files where user is a shared Viewer or Editor (not Owner)
   let sharedFolders = [
     ...linkResolvedFolders,
+    ...serverSharedFolders,
     ...folders.filter((f) => {
       if (f.isTrash) return false;
       const isOwner = authUser && (f.ownerId === authUser.id || f.owner_id === authUser.id);
@@ -134,6 +212,7 @@ export const Shared = () => {
 
   let sharedFiles = [
     ...linkResolvedFiles,
+    ...serverSharedFiles,
     ...files.filter((f) => {
       if (f.isTrash) return false;
       const isOwner = authUser && (f.ownerId === authUser.id || f.owner_id === authUser.id);
@@ -258,3 +337,4 @@ export const Shared = () => {
     </div>
   );
 };
+

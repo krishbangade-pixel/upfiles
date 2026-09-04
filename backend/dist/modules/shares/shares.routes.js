@@ -7,6 +7,7 @@ const validate_js_1 = require("../../middleware/validate.js");
 const router = (0, express_1.Router)();
 router.use(auth_js_1.authenticate);
 router.post('/', (0, validate_js_1.validate)({ body: shares_controller_js_1.createShareSchema }), shares_controller_js_1.createShare);
+router.get('/me', shares_controller_js_1.getSharesForUser);
 router.get('/:resourceType/:resourceId', shares_controller_js_1.getShares);
 router.delete('/:id', shares_controller_js_1.removeShare);
 exports.default = router;

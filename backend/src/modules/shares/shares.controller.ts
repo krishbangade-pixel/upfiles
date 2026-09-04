@@ -132,3 +132,74 @@ export async function removeShare(req: Request, res: Response, next: NextFunctio
     next(err);
   }
 }
+
+export async function getSharesForUser(req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = req.user!;
+
+    const { data: shares, error } = await supabaseAdmin
+      .from('shares')
+      .select('*')
+      .or(`grantee_user_id.eq.${user.id},grantee_email.eq.${user.email}`);
+
+    if (error) throw new Error(error.message);
+
+    if (!shares || shares.length === 0) {
+      return res.status(200).json({ data: { files: [], folders: [] }, message: 'No shares found' });
+    }
+
+    const fileIds = shares.filter((s: any) => s.resource_type === 'file').map((s: any) => s.resource_id);
+    const folderIds = shares.filter((s: any) => s.resource_type === 'folder').map((s: any) => s.resource_id);
+
+    let sharedFiles: any[] = [];
+    let sharedFolders: any[] = [];
+
+    if (fileIds.length > 0) {
+      const { data: files } = await supabaseAdmin
+        .from('files')
+        .select('*')
+        .in('id', fileIds)
+        .eq('is_trash', false);
+
+      sharedFiles = (files || []).map((f: any) => ({
+        id: f.id,
+        name: f.name,
+        size: f.size,
+        formattedSize: f.formatted_size || `${((f.size || 0) / 1024).toFixed(1)} KB`,
+        extension: f.name.split('.').pop(),
+        type: f.mime_type,
+        storageKey: f.id,
+        isSharedWithMe: true,
+        owner: 'Shared with me',
+        createdAt: f.created_at,
+        updatedAt: f.updated_at,
+      }));
+    }
+
+    if (folderIds.length > 0) {
+      const { data: folders } = await supabaseAdmin
+        .from('folders')
+        .select('*')
+        .in('id', folderIds)
+        .eq('is_trash', false);
+
+      sharedFolders = (folders || []).map((f: any) => ({
+        id: f.id,
+        name: f.name,
+        parentId: f.parent_id,
+        isSharedWithMe: true,
+        owner: 'Shared with me',
+        createdAt: f.created_at,
+        updatedAt: f.updated_at,
+      }));
+    }
+
+    res.status(200).json({
+      data: { files: sharedFiles, folders: sharedFolders },
+      message: 'User shares retrieved successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
