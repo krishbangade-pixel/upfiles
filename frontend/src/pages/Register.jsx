@@ -91,9 +91,9 @@ export const Register = () => {
         {/* Header Branding */}
         <div className="text-center space-y-3">
           <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-[#222428] border border-[#34373d] rounded-2xl shadow-md">
-            <Cloud className="w-6 h-6 text-[#316d7a] fill-[#316d7a] stroke-[1.5]" />
-            <span className="text-xl font-bold tracking-tight text-white">
-              UpFiles
+            <Cloud className="w-6 h-6 text-[#0084ff] fill-[#0084ff] stroke-none" />
+            <span className="text-xl font-bold tracking-tight text-white font-sans">
+              Up<span className="text-[#0084ff]">Files</span>
             </span>
           </div>
 
