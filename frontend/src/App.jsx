@@ -10,6 +10,7 @@ import { Trash } from './pages/Trash';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { Landing } from './pages/Landing';
 
 // Protected Route Guard
 const ProtectedRoute = ({ children }) => {
@@ -60,6 +61,10 @@ export default function App() {
     <BrowserRouter>
       <DriveProvider>
         <Routes>
+          {/* Public WebThreads Landing Page */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/landing" element={<Landing />} />
+
           {/* Public Auth Routes */}
           <Route
             path="/login"
@@ -80,14 +85,12 @@ export default function App() {
 
           {/* Application Dashboard Routes */}
           <Route
-            path="/"
             element={
               <ProtectedRoute>
                 <Layout />
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="/drive" replace />} />
             <Route path="drive" element={<Drive />} />
             <Route path="shared" element={<Shared />} />
             <Route path="share/:token" element={<Shared />} />
@@ -97,7 +100,7 @@ export default function App() {
             <Route path="settings" element={<Settings />} />
           </Route>
 
-          <Route path="*" element={<Navigate to="/drive" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </DriveProvider>
     </BrowserRouter>
