@@ -50,7 +50,7 @@ export const Settings = () => {
       {/* Top Header */}
       <div className="border-b border-[#34373d] pb-3">
         <h1 className="text-xl font-bold text-white tracking-tight">Settings</h1>
-        <p className="text-xs text-gray-400 mt-1">Manage your CloudDrive account preferences</p>
+        <p className="text-xs text-gray-400 mt-1">Manage your UpFiles account preferences</p>
       </div>
 
       <div className="space-y-6 text-xs">

@@ -72,7 +72,7 @@ export const Register = () => {
       }
     } else {
       if (session) {
-        addToast(`Welcome to CloudDrive, ${fullName}!`);
+        addToast(`Welcome to UpFiles, ${fullName}!`);
         navigate('/drive');
       } else if (user) {
         setInfoMsg(
@@ -93,7 +93,7 @@ export const Register = () => {
           <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-[#222428] border border-[#34373d] rounded-2xl shadow-md">
             <Cloud className="w-6 h-6 text-[#316d7a] fill-[#316d7a] stroke-[1.5]" />
             <span className="text-xl font-bold tracking-tight text-white">
-              CloudDrive
+              UpFiles
             </span>
           </div>
 

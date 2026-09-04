@@ -12,7 +12,7 @@ export const Topbar = () => {
   const userInitial = userName.charAt(0).toUpperCase();
 
   const handleHelpClick = () => {
-    addToast('CloudDrive Help Center & Support', 'info');
+    addToast('UpFiles Help Center & Support', 'info');
   };
 
   const handleLogoutClick = async () => {

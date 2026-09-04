@@ -68,7 +68,7 @@ export const Sidebar = () => {
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2 text-white font-bold text-lg tracking-tight select-none">
               <Cloud className="w-6 h-6 text-[#316d7a] fill-[#316d7a] stroke-[1.5]" />
-              <span>CloudDrive</span>
+              <span>UpFiles</span>
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
