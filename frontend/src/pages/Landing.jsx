@@ -105,10 +105,10 @@ export const Landing = () => {
           </button>
 
           <button
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/login')}
             className="w-full sm:w-auto px-8 py-3 bg-black/60 hover:bg-white/10 border border-gray-700/80 hover:border-gray-500 text-white font-semibold text-sm rounded-xl backdrop-blur-md transition-all cursor-pointer active:scale-95"
           >
-            Sign Up
+            Sign In
           </button>
         </div>
       </main>
