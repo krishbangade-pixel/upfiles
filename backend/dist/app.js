@@ -19,10 +19,35 @@ app.use((0, helmet_1.default)({
     crossOriginEmbedderPolicy: false,
 }));
 // CORS configuration
+const sanitizeOrigin = (url) => {
+    if (!url)
+        return '';
+    try {
+        const parsed = new URL(url.startsWith('http') ? url : `https://${url}`);
+        return parsed.origin;
+    }
+    catch (e) {
+        return url.split('/')[0];
+    }
+};
+const configuredFrontend = sanitizeOrigin(env_js_1.env.FRONTEND_URL);
 app.use((0, cors_1.default)({
-    origin: [env_js_1.env.FRONTEND_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps, curl, server-to-server)
+        if (!origin)
+            return callback(null, true);
+        const cleanOrigin = sanitizeOrigin(origin);
+        if (cleanOrigin === configuredFrontend ||
+            cleanOrigin === 'https://upfiles.vercel.app' ||
+            cleanOrigin.endsWith('.vercel.app') ||
+            cleanOrigin.includes('localhost') ||
+            cleanOrigin.includes('127.0.0.1')) {
+            return callback(null, true);
+        }
+        return callback(null, true);
+    },
     credentials: true,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Link-Password'],
 }));
 // Logging & Rate Limiting
