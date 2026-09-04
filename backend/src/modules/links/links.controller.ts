@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { supabaseAdmin } from '../../config/supabase.js';
+import { supabaseAdmin, supabaseAnon } from '../../config/supabase.js';
 import { ForbiddenError, NotFoundError, ValidationError } from '../../utils/errors.js';
 import { getUserFilePermission, getUserFolderPermission } from '../../utils/permissions.js';
 import { createSignedDownloadUrl } from '../../utils/storage.js';
+import { formatSizeBytes } from '../../utils/filenames.js';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -64,7 +65,7 @@ export async function createLinkShare(req: Request, res: Response, next: NextFun
       data: {
         id: linkShare.id,
         token: linkShare.token,
-        publicUrl: `${req.protocol}://${req.get('host')}/api/link/${linkShare.token}`,
+        publicUrl: `${req.protocol}://${req.get('host')}/share/${linkShare.token}`,
         hasPassword: !!passwordHash,
         expiresAt: linkShare.expires_at,
       },
@@ -79,12 +80,13 @@ export async function getLinkShare(req: Request, res: Response, next: NextFuncti
   try {
     const { token } = req.params;
     const providedPassword = req.headers['x-link-password'] as string | undefined;
+    const db = req.db || supabaseAnon;
 
-    const { data: link, error } = await supabaseAdmin
+    const { data: link, error } = await db
       .from('link_shares')
       .select('*')
       .eq('token', token)
-      .single();
+      .maybeSingle();
 
     if (error || !link) throw new NotFoundError('Shared link not found or invalid');
 
@@ -111,11 +113,11 @@ export async function getLinkShare(req: Request, res: Response, next: NextFuncti
 
     // Resolve resource metadata & download url if file
     if (link.resource_type === 'file') {
-      const { data: file } = await supabaseAdmin.from('files').select('*').eq('id', link.resource_id).single();
-      if (!file || file.is_trash) throw new NotFoundError('Shared file unavailable');
+      const { data: file } = await db.from('files').select('*').eq('id', link.resource_id).maybeSingle();
+      if (!file || file.is_deleted) throw new NotFoundError('Shared file unavailable');
 
       const key = file.storage_key || file.storage_path;
-      const { url } = await createSignedDownloadUrl(key, 300);
+      const { url } = await createSignedDownloadUrl(key, 3600, db);
 
       return res.status(200).json({
         data: {
@@ -124,16 +126,21 @@ export async function getLinkShare(req: Request, res: Response, next: NextFuncti
             id: file.id,
             name: file.name,
             size: file.size_bytes,
-            formattedSize: file.formatted_size,
+            formattedSize: formatSizeBytes(file.size_bytes),
             mimeType: file.mime_type,
             downloadUrl: url,
+            createdAt: file.created_at,
+            updatedAt: file.updated_at,
           },
         },
         message: 'Link resource retrieved',
       });
     } else {
-      const { data: folder } = await supabaseAdmin.from('folders').select('*').eq('id', link.resource_id).single();
-      if (!folder || folder.is_trash) throw new NotFoundError('Shared folder unavailable');
+      const { data: folder } = await db.from('folders').select('*').eq('id', link.resource_id).maybeSingle();
+      if (!folder || folder.is_deleted) throw new NotFoundError('Shared folder unavailable');
+
+      const { data: childFiles } = await db.from('files').select('*').eq('folder_id', folder.id).eq('is_deleted', false);
+      const { data: childFolders } = await db.from('folders').select('*').eq('parent_id', folder.id).eq('is_deleted', false);
 
       return res.status(200).json({
         data: {
@@ -141,11 +148,65 @@ export async function getLinkShare(req: Request, res: Response, next: NextFuncti
           folder: {
             id: folder.id,
             name: folder.name,
+            createdAt: folder.created_at,
+            updatedAt: folder.updated_at,
           },
+          items: [
+            ...(childFolders || []).map((f: any) => ({ id: f.id, name: f.name, type: 'folder', isFolder: true })),
+            ...(childFiles || []).map((f: any) => ({
+              id: f.id,
+              name: f.name,
+              size: f.size_bytes,
+              mimeType: f.mime_type,
+              type: 'file',
+              isFolder: false,
+            })),
+          ],
         },
         message: 'Link resource retrieved',
       });
     }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getLinkFile(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { token, fileId } = req.params;
+    const providedPassword = req.headers['x-link-password'] as string | undefined;
+    const db = req.db || supabaseAnon;
+
+    const { data: link } = await db.from('link_shares').select('*').eq('token', token).maybeSingle();
+    if (!link) throw new NotFoundError('Shared link not found');
+
+    if (link.expires_at && new Date(link.expires_at) < new Date()) {
+      throw new ForbiddenError('This link has expired');
+    }
+
+    if (link.password_hash) {
+      if (!providedPassword) return res.status(401).json({ error: { code: 'PASSWORD_REQUIRED' } });
+      const match = await bcrypt.compare(providedPassword, link.password_hash);
+      if (!match) throw new ForbiddenError('Incorrect link password');
+    }
+
+    const { data: file } = await db.from('files').select('*').eq('id', fileId).maybeSingle();
+    if (!file || file.is_deleted) throw new NotFoundError('File not found');
+
+    const key = file.storage_key || file.storage_path;
+    const { url } = await createSignedDownloadUrl(key, 3600, db);
+
+    res.status(200).json({
+      data: {
+        id: file.id,
+        name: file.name,
+        size: file.size_bytes,
+        formattedSize: formatSizeBytes(file.size_bytes),
+        mimeType: file.mime_type,
+        downloadUrl: url,
+      },
+      message: 'File retrieved',
+    });
   } catch (err) {
     next(err);
   }

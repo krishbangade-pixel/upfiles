@@ -10,6 +10,7 @@ import { Trash } from './pages/Trash';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { PublicSharePage } from './pages/PublicSharePage';
 
 // Protected Route Guard
 const ProtectedRoute = ({ children }) => {
@@ -95,6 +96,9 @@ export default function App() {
             <Route path="trash" element={<Trash />} />
             <Route path="settings" element={<Settings />} />
           </Route>
+
+          {/* Public Share Link Route */}
+          <Route path="/share/:token" element={<PublicSharePage />} />
 
           <Route path="*" element={<Navigate to="/drive" replace />} />
         </Routes>
