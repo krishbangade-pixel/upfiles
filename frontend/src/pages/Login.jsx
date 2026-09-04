@@ -13,7 +13,6 @@ import {
   CheckCircle2, 
   KeyRound, 
   ShieldCheck,
-  Sparkles,
   X
 } from 'lucide-react';
 
@@ -89,12 +88,6 @@ export const Login = () => {
         msg: error?.message || 'Failed to send reset link. Please verify the email address.',
       });
     }
-  };
-
-  const fillDemo = () => {
-    setEmail('krishbangade@gmail.com');
-    setPassword('password123');
-    setErrorMsg('');
   };
 
   return (
@@ -195,7 +188,7 @@ export const Login = () => {
               </div>
             </div>
 
-            {/* Remember Me & Demo Fill */}
+            {/* Remember Me */}
             <div className="flex items-center justify-between text-xs pt-1">
               <label className="flex items-center gap-2 cursor-pointer text-gray-300 hover:text-white select-none">
                 <input
@@ -206,15 +199,6 @@ export const Login = () => {
                 />
                 <span>Remember this device</span>
               </label>
-
-              <button
-                type="button"
-                onClick={fillDemo}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-[#316d7a] hover:bg-[#275863] px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-xs"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Fill Demo</span>
-              </button>
             </div>
 
             {/* Submit Button */}

@@ -45,6 +45,11 @@ export const Register = () => {
       return;
     }
 
+    if (!/^[a-zA-Z\s]+$/.test(fullName.trim())) {
+      setErrorMsg('Full Name can only contain alphabetic characters.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setErrorMsg('Passwords do not match.');
       return;
@@ -137,8 +142,10 @@ export const Register = () => {
                 <input
                   type="text"
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  onChange={(e) => setFullName(e.target.value.replace(/[^a-zA-Z\s]/g, ''))}
                   placeholder="Krish Bangade"
+                  pattern="[A-Za-z\s]+"
+                  title="Only letters and spaces are allowed"
                   required
                   className="w-full pl-10 pr-4 py-2.5 text-xs bg-[#1d1e21] border border-[#34373d] rounded-xl text-white placeholder-gray-400 focus:bg-[#18191b] focus:outline-none focus:border-[#316d7a] focus:ring-1 focus:ring-[#316d7a] transition-all"
                 />
