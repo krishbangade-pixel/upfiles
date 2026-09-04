@@ -16,9 +16,13 @@ import {
 import { useDrive } from '../../context/DriveContext';
 
 export const Sidebar = () => {
-  const { storageInfo, openModal, sidebarOpen, setSidebarOpen } = useDrive();
+  const { storageInfo, openModal, sidebarOpen, setSidebarOpen, authUser } = useDrive();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const userName = authUser?.user_metadata?.full_name || authUser?.email?.split('@')[0] || 'User';
+  const userEmail = authUser?.email || '';
+  const userInitial = userName.charAt(0).toUpperCase();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -137,17 +141,31 @@ export const Sidebar = () => {
           </nav>
         </div>
 
-        {/* Bottom Storage Information */}
-        <div className="pt-4 border-t border-[#34373d] space-y-2 text-xs">
-          <div className="flex items-center gap-2 text-gray-200 font-medium">
-            <HardDrive className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
-            <span className="truncate">{storageInfo.formattedText}</span>
+        {/* Bottom Storage Information & User Profile */}
+        <div className="pt-4 border-t border-[#34373d] space-y-3 text-xs">
+          {/* User Profile Card */}
+          <div className="flex items-center gap-2.5 p-2 bg-[#222428] border border-[#34373d] rounded-xl text-xs">
+            <div className="w-7 h-7 rounded-full bg-[#316d7a] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+              {userInitial}
+            </div>
+            <div className="truncate flex-1">
+              <p className="font-semibold text-white truncate text-xs">{userName}</p>
+              {userEmail && <p className="text-[10px] text-gray-400 truncate">{userEmail}</p>}
+            </div>
           </div>
-          <div className="w-full bg-[#1d1e21] h-1.5 rounded-full overflow-hidden">
-            <div
-              className="bg-[#316d7a] h-1.5 rounded-full transition-all duration-300"
-              style={{ width: `${storageInfo.percentage}%` }}
-            />
+
+          {/* Storage Bar */}
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-gray-300 font-medium">
+              <HardDrive className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+              <span className="truncate">{storageInfo.formattedText}</span>
+            </div>
+            <div className="w-full bg-[#1d1e21] h-1.5 rounded-full overflow-hidden border border-[#34373d]">
+              <div
+                className="bg-[#316d7a] h-1.5 rounded-full transition-all duration-300"
+                style={{ width: `${storageInfo.percentage}%` }}
+              />
+            </div>
           </div>
         </div>
       </aside>

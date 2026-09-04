@@ -4,8 +4,12 @@ import { useDrive } from '../../context/DriveContext';
 import { useNavigate } from 'react-router-dom';
 
 export const Topbar = () => {
-  const { searchQuery, setSearchQuery, user, setSidebarOpen, addToast, signOut } = useDrive();
+  const { searchQuery, setSearchQuery, authUser, setSidebarOpen, addToast, signOut } = useDrive();
   const navigate = useNavigate();
+
+  const userName = authUser?.user_metadata?.full_name || authUser?.email?.split('@')[0] || 'User';
+  const userEmail = authUser?.email || '';
+  const userInitial = userName.charAt(0).toUpperCase();
 
   const handleHelpClick = () => {
     addToast('CloudDrive Help Center & Support', 'info');
@@ -77,9 +81,9 @@ export const Topbar = () => {
           <div
             onClick={() => navigate('/settings')}
             className="w-8 h-8 rounded-full bg-[#316d7a] text-white font-bold text-xs flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity border border-[#34373d]"
-            title={`${user.name} (${user.email})`}
+            title={`${userName} (${userEmail})`}
           >
-            {user.initials}
+            {userInitial}
           </div>
         </div>
       </div>
