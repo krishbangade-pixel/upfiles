@@ -10,7 +10,6 @@ import { Trash } from './pages/Trash';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
-import { Landing } from './pages/Landing';
 
 // Protected Route Guard
 const ProtectedRoute = ({ children }) => {
@@ -41,7 +40,7 @@ const PublicRoute = ({ children }) => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#18191b] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#18191b] text-[#18191b] text-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-3 border-[#316d7a] border-t-transparent rounded-full animate-spin" />
         </div>
@@ -61,10 +60,6 @@ export default function App() {
     <BrowserRouter>
       <DriveProvider>
         <Routes>
-          {/* Public Landing Page */}
-          <Route path="/" element={<Landing />} />
-          <Route path="/landing" element={<Landing />} />
-
           {/* Public Auth Routes */}
           <Route
             path="/login"
@@ -85,12 +80,14 @@ export default function App() {
 
           {/* Application Dashboard Routes */}
           <Route
+            path="/"
             element={
               <ProtectedRoute>
                 <Layout />
               </ProtectedRoute>
             }
           >
+            <Route index element={<Navigate to="/drive" replace />} />
             <Route path="drive" element={<Drive />} />
             <Route path="shared" element={<Shared />} />
             <Route path="share/:token" element={<Shared />} />
@@ -100,7 +97,7 @@ export default function App() {
             <Route path="settings" element={<Settings />} />
           </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/drive" replace />} />
         </Routes>
       </DriveProvider>
     </BrowserRouter>
