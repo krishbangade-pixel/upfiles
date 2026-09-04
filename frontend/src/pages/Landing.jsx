@@ -51,17 +51,8 @@ export const Landing = () => {
           </span>
         </Link>
 
-        {/* Top Right Action Buttons: Sign In / Dashboard */}
+        {/* Top Right Action Button: Dashboard */}
         <div className="flex items-center gap-3">
-          {!authUser && !session ? (
-            <Link
-              to="/login"
-              className="px-4 py-2 text-xs font-semibold text-gray-300 hover:text-white transition-colors"
-            >
-              Sign In
-            </Link>
-          ) : null}
-
           <button
             onClick={() => navigate('/drive')}
             className="flex items-center gap-2 px-4 py-2 border border-gray-700/80 hover:border-gray-500 bg-black/40 hover:bg-white/5 text-xs font-medium text-white rounded-xl backdrop-blur-md transition-all cursor-pointer shadow-xs active:scale-95"
