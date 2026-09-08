@@ -37,6 +37,41 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
+-- Webhook Trigger for n8n Welcome Email on Auth Signup
+CREATE EXTENSION IF NOT EXISTS "pg_net";
+
+CREATE OR REPLACE FUNCTION public.notify_n8n_on_signup()
+RETURNS TRIGGER AS $$
+DECLARE
+  payload jsonb;
+BEGIN
+  payload := jsonb_build_object(
+    'type', TG_OP,
+    'table', TG_TABLE_NAME,
+    'schema', TG_TABLE_SCHEMA,
+    'record', jsonb_build_object(
+      'id', NEW.id,
+      'email', NEW.email,
+      'raw_user_meta_data', NEW.raw_user_meta_data,
+      'created_at', NEW.created_at
+    )
+  );
+
+  PERFORM net.http_post(
+    url := 'https://krish2700.app.n8n.cloud/webhook/supabase-new-signup',
+    headers := '{"Content-Type": "application/json"}'::jsonb,
+    body := payload
+  );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created_n8n ON auth.users;
+CREATE TRIGGER on_auth_user_created_n8n
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.notify_n8n_on_signup();
+
 -- 2. FOLDERS TABLE
 CREATE TABLE IF NOT EXISTS public.folders (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
